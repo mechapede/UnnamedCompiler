@@ -7,6 +7,7 @@
 
 import org.antlr.runtime.*;
 import java.io.*;
+import ast.*;
 
 public class Compiler {
 	public static void main (String[] args) throws Exception {
@@ -27,7 +28,8 @@ public class Compiler {
 		ulNoActionsParser parser = new ulNoActionsParser(tokens);
 
 		try {
-			parser.program();
+			Program p = parser.program();
+            //System.out.println(p.getFunctionCount());
 		}
 		catch (RecognitionException e )	{
 			// A lexical or parsing error occured.
