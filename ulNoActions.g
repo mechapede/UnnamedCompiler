@@ -206,7 +206,7 @@ ltop returns [Expression e]
 
 addop returns [Expression e]
     :
-    ee=multiop{e=ee;} ('+' ee=multiop{e = new AddExpression(e,ee);} | ee=multiop{e = new SubtractExpression(e,ee);} '-')*
+    ee=multiop{e=ee;} ('+' ee=multiop{e = new AddExpression(e,ee);} | '-' ee=multiop{e = new SubtractExpression(e,ee);} )*
     ;
 
 multiop returns [Expression e]
@@ -220,24 +220,13 @@ atom returns [Expression e]
     e = new MultiExpression(null,null); //TODO: implement rest of code, fix backtracking
 }
     :
-    (ee=arrayexpr)|
-    (ee=callexpr)|
-    (ee=varexpr)|
-    (ee=nestedexpr)|
+    (ee=getexpr)|
     (ee=literalexpr)
     ;
 
-arrayexpr: ID '[' expr ']'
+getexpr: identifier ( '[' expr ']' | '(' exprList ')' )?
     ;
 
-callexpr: ID '(' exprList ')'
-    ;
-
-varexpr: ID
-    ;
-
-nestedexpr: '(' expr ')'
-    ;
 
 literalexpr : (STRINGCONSTANT)|
               (INTERGERCONSTANT)|
