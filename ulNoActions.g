@@ -115,8 +115,8 @@ compoundType returns [Type t]
 
 statement returns [Statement s]
     :
-    (s1=emptystatement{s1 = null;})|
-    (s2=ifstatement{s2 = null;})|
+    (s1=emptystatement{s = s1;})|
+    (s2=ifstatement{s = s2;})|
     (s3=whilestatement{s3 = null;})|
     (s4=printstatement{s4 = null;})|
     (s5=printlnstatement{s5 = null;})|
@@ -215,31 +215,59 @@ multiop returns [Expression e]
     ;
 
 atom returns [Expression e]
+    :
+    (ee=getexpr{e = ee;})|
+    (ee=literalexpr{e = ee;})
+    ;
+
+getexpr returns [Expression e]
 @init
 {
-    e = new MultiExpression(null,null); //TODO: implement rest of code, fix backtracking
+    ExpressionList list = null;
+    Expression index  = null;
+    Identifier id = null;
+}
+@after
+{
+    if( list != null){
+      e = new FunctionCall(id,list);
+    }else if( index != null ) {
+      e = new ArrayValue(id,index);
+    } else{
+      e = new IdentifierValue(id);
+    }
 }
     :
-    (ee=getexpr)|
-    (ee=literalexpr)
-    ;
-
-getexpr: identifier ( '[' expr ']' | '(' exprList ')' )?
+    i=identifier{id = i;} ( '[' ei=expr{index=ei;} ']' | '(' el=exprList{list=el;} ')' )?
     ;
 
 
-literalexpr : (STRINGCONSTANT)|
-              (INTERGERCONSTANT)|
-              (CHARACTERCONSTANT)|
-              (FLOATCONSTANT)|
-              (TRUE)|
-              (FALSE)
+literalexpr returns [Expression e]
+@init
+{
+    e = new IdentifierValue(null); //TODO:
+}
+    :
+    (s=STRINGCONSTANT)|
+    (s=INTERGERCONSTANT)|
+    (s=CHARACTERCONSTANT)|
+    (s=FLOATCONSTANT)|
+    (s=TRUE)|
+    (s=FALSE)
     ;
 
-exprList: expr exprMore*
+exprList returns [ExpressionList el]
+@init
+{
+    el = new ExpressionList();
+}
+    :
+    e=expr{el.addExpression(e);} (e=exprMore{el.addExpression(e);})*
     ;
 
-exprMore: ',' + expr
+exprMore returns [Expression e]
+    :
+    ',' + ee=expr{e=ee;}
     ;
 
 identifier returns [Identifier s]
@@ -256,7 +284,7 @@ type returns [Type t]:
     (VOIDTYPE{t = new VoidType();})
 	;
 
-/* Lexersection */
+/* Lexer section */
 IF	: 'if'
 	;
 
