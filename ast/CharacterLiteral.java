@@ -1,9 +1,9 @@
 package ast;
 
-public class FloatLiteral extends Expression{
-    float val;
+public class CharacterLiteral extends Expression{
+    char val;
 
-    public FloatLiteral(float val){
+    public CharacterLiteral(char val){
         this.val = val;
     }
 

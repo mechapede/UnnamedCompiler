@@ -21,4 +21,8 @@ public class ExpressionList{
         return expressions.size();
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

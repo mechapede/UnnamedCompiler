@@ -7,4 +7,8 @@ public class IdentifierValue extends Expression{
       this.identifier = identifier;
   }
 
+  public Object accept(Visitor v){
+       return v.visit(this);
+  }
+
 }

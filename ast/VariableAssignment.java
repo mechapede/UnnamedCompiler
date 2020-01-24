@@ -17,4 +17,8 @@ public class VariableAssignment{
         this.identifier = identifier;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

@@ -21,7 +21,7 @@ public class Program{
         return functions.size();
     }
 
-    // public Object accept(Visitor v){
-    //     return v.visit(this);
-    // }
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
 }

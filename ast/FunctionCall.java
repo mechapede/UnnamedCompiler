@@ -9,4 +9,8 @@ public class FunctionCall extends Expression{
         this.args = args;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

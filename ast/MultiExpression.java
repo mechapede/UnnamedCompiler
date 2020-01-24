@@ -9,8 +9,8 @@ public class MultiExpression extends Expression {
         this.e2 = e2;
     }
 
-    /*
     public Object accept(Visitor v){
-        return v.visit(this);
-    } */
+         return v.visit(this);
+    }
+    
 }

@@ -7,4 +7,8 @@ public class Identifier{
         this.id = id;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

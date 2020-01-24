@@ -6,4 +6,9 @@ public class IntergerLiteral extends Expression{
     public IntergerLiteral(int val){
         this.val = val;
     }
+
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

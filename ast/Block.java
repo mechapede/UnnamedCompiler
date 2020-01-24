@@ -21,4 +21,8 @@ public class Block{
         return statements.size();
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

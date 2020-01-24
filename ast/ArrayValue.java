@@ -9,4 +9,8 @@ public class ArrayValue extends Expression{
         this.id = id;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

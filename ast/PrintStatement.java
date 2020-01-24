@@ -7,4 +7,8 @@ public class PrintStatement extends Statement{
         this.expression = expression;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

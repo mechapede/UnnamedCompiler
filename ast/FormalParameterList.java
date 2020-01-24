@@ -21,4 +21,8 @@ public class FormalParameterList{
         return parameters.size();
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

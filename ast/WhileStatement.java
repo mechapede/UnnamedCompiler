@@ -16,4 +16,8 @@ public class WhileStatement extends Statement{
     public void setBlock(Block block){
         this.block = block;
     }
+
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
 }

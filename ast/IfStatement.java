@@ -23,4 +23,8 @@ public class IfStatement extends Statement{
         this.elseblock = elseblock;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

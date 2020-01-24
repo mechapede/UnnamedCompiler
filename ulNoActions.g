@@ -101,7 +101,7 @@ compoundType returns [Type t]
 @init
 {
     boolean array = false;
-    int array_size = 0;
+    IntergerLiteral array_size = null;
 }
 @after
 {
@@ -110,19 +110,19 @@ compoundType returns [Type t]
     }
 }
     :
-    tb=type{t=tb;} ( '[' n=INTERGERCONSTANT{array=true; array_size=Integer.parseInt(n.getText());} ']' )?
+    tb=type{t=tb;} ( '[' n=INTERGERCONSTANT{array=true; array_size=new IntergerLiteral(Integer.parseInt(n.getText()));} ']' )?
     ;
 
 statement returns [Statement s]
     :
-    (s1=emptystatement{s = s1;})|
-    (s2=ifstatement{s = s2;})|
-    (s3=whilestatement{s3 = null;})|
-    (s4=printstatement{s4 = null;})|
-    (s5=printlnstatement{s5 = null;})|
-    (s6=returnstatement){s6 = null;}|
-    (s7=assignmentstatement{s7 = null;})|
-    (s8=arrayassignmentstatement{s8 = null;})
+    (ss=emptystatement)|
+    (ss=ifstatement)|
+    (ss=whilestatement)|
+    (ss=printstatement)|
+    (ss=printlnstatement)|
+    (ss=returnstatement)|
+    (ss=assignmentstatement)|
+    (ss=arrayassignmentexprstatement) {s = ss;}
     ;
 
 emptystatement returns [Statement s]
@@ -134,55 +134,75 @@ emptystatement returns [Statement s]
     ';'
     ;
 
-ifstatement returns [IfStatement s]
+ifstatement returns [Statement s]
 @init
 {
-    s = new IfStatement();
+    s = null;
+    IfStatement f =  new IfStatement();
+}
+@after
+{
+    s = f;
 }
     :
-    IF '(' e=expr{s.setExpression(e);} ')' b=block{s.setBlock(b);} (ELSE be=block{s.setElseBlock(be);})?
+    IF '(' e=expr{f.setExpression(e);} ')' b=block{f.setBlock(b);} (ELSE be=block{f.setElseBlock(be);})?
     ;
 
-whilestatement returns [WhileStatement s]
-    @init
-    {
-        s = new WhileStatement();
-    }
+whilestatement returns [Statement s]
+@init
+{
+    s = null;
+    WhileStatement w = new WhileStatement();
+}
+@after
+{
+    s = w;
+}
     :
-    WHILE '(' e=expr{s.setExpression(e);} ')' b=block{s.setBlock(b);}
+    WHILE '(' e=expr{w.setExpression(e);} ')' b=block{w.setBlock(b);}
     ;
 
-printstatement returns [PrintStatement s]
+printstatement returns [Statement s]
     :
     PRINT e=expr{s = new PrintStatement(e);} ';'
     ;
 
-printlnstatement returns [PrintLnStatement s]
+printlnstatement returns [Statement s]
     :
     PRINTLN e=expr{s = new PrintLnStatement(e);} ';'
     ;
 
-returnstatement returns [ReturnStatement s]
+returnstatement returns [Statement s]
     :
     RETURN e=expr{s = new ReturnStatement(e);} ';'
     ;
 
-assignmentstatement returns [AssignmentStatement s]
+assignmentstatement returns [Statement s]
 @init
 {
-    s = new AssignmentStatement();
+    s = null;
+    AssignmentStatement as = new AssignmentStatement();
+}
+@after
+{
+    s = as;
 }
     :
-    i=identifier{s.setIdentifier(i);} '=' e=expr{s.setExpression(e);} ';'
+    i=identifier{as.setIdentifier(i);} '=' e=expr{as.setExpression(e);} ';'
     ;
 
-arrayassignmentstatement returns [ArrayAssignment s]
+arrayassignmentexprstatement returns [Statement s]
 @init
 {
-    s = new ArrayAssignment();
+    s = null;
+    ArrayAssignment as = new ArrayAssignment();
+}
+@after
+{
+    //s = as;
 }
     :
-    i=identifier{s.setIdentifier(i);} '[' index=expr{s.setIndexExpression(index);} ']' '=' v=expr{s.setExpression(v);} ';'
+    ( (identifier '[' expr ']' '=' expr ) => (i=identifier{as.setIdentifier(i);} '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);}) | expr ) ';'
     ;
 
 block returns [Block b]
@@ -206,7 +226,8 @@ ltop returns [Expression e]
 
 addop returns [Expression e]
     :
-    ee=multiop{e=ee;} ('+' ee=multiop{e = new AddExpression(e,ee);} | '-' ee=multiop{e = new SubtractExpression(e,ee);} )*
+    ee=multiop{e=ee;} ('+' ee=multiop{e = new AddExpression(e,ee);} |
+                       '-' ee=multiop{e = new SubtractExpression(e,ee);} )*
     ;
 
 multiop returns [Expression e]
@@ -216,8 +237,9 @@ multiop returns [Expression e]
 
 atom returns [Expression e]
     :
-    (ee=getexpr{e = ee;})|
-    (ee=literalexpr{e = ee;})
+    (ee=getexpr)|
+    (ee=literalexpr)
+    | ('(' ee=expr ')') {e = ee;}
     ;
 
 getexpr returns [Expression e]
@@ -243,17 +265,13 @@ getexpr returns [Expression e]
 
 
 literalexpr returns [Expression e]
-@init
-{
-    e = new IdentifierValue(null); //TODO:
-}
     :
-    (s=STRINGCONSTANT)|
-    (s=INTERGERCONSTANT)|
-    (s=CHARACTERCONSTANT)|
-    (s=FLOATCONSTANT)|
-    (s=TRUE)|
-    (s=FALSE)
+    (n=STRINGCONSTANT{e = new StringLiteral(n.getText());})|
+    (n=INTERGERCONSTANT{e = new IntergerLiteral(Integer.parseInt(n.getText()));})|
+    (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getText().charAt(0));})|
+    (n=FLOATCONSTANT{e = new FloatLiteral(Float.parseFloat(n.getText()));})|
+    (n=TRUE{e = new BooleanLiteral(true);})|
+    (n=FALSE{e = new BooleanLiteral(false);})
     ;
 
 exprList returns [ExpressionList el]

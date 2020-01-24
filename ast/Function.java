@@ -17,9 +17,8 @@ public class Function{
         this.body = body;
     }
 
-    /*
     public Object accept(Visitor v){
         return v.visit(this);
-    }*/
+    }
 
 }

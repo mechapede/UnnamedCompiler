@@ -9,4 +9,8 @@ public class LessThanExpression extends Expression{
         this.e2 = e2;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }

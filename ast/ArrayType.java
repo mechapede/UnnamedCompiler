@@ -2,14 +2,14 @@ package ast;
 
 public class ArrayType extends Type{
     Type type;
-    int size;
+    IntergerLiteral size;
 
     public ArrayType(){
         type = null;
-        size = 0;
+        size = null;
     }
 
-    public ArrayType(Type type, int size){
+    public ArrayType(Type type, IntergerLiteral size){
         type = type;
         size = size;
     }
@@ -18,8 +18,12 @@ public class ArrayType extends Type{
         this.type = type;
     }
 
-    public void setSize(int size){
+    public void setSize(IntergerLiteral size){
         this.size = size;
+    }
+
+    public Object accept(Visitor v){
+         return v.visit(this);
     }
 
 }

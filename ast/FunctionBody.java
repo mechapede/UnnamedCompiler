@@ -34,9 +34,9 @@ public class FunctionBody {
     public int getStatementCount(){
         return statements.size();
     }
-    //
-    // public Object accept(Visitor v){
-    //     return v.visit(this);
-    // }
+
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
 
 }

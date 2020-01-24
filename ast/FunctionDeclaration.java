@@ -23,4 +23,8 @@ public class FunctionDeclaration{
         this.pl = pl;
     }
 
+    public Object accept(Visitor v){
+         return v.visit(this);
+    }
+
 }
