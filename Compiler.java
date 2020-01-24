@@ -29,6 +29,8 @@ public class Compiler {
 
 		try {
 			Program p = parser.program();
+            PrintVisitor v = new PrintVisitor();
+            p.accept(v);
             //System.out.println(p.getFunctionCount());
 		}
 		catch (RecognitionException e )	{
