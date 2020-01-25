@@ -1,9 +1,10 @@
 package ast;
 
-public class Identifier{
+public class Identifier extends TreeNode{
     String id;
 
-    public Identifier(String id){
+    public Identifier(int tokenline, int tokenchar, String id){
+        super(tokenline, tokenchar);
         this.id = id;
     }
 

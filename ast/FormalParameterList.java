@@ -2,7 +2,7 @@ package ast;
 
 import java.util.ArrayList;
 
-public class FormalParameterList{
+public class FormalParameterList extends TreeNode{
     ArrayList<FormalParameter> parameters;
 
     public FormalParameterList(){

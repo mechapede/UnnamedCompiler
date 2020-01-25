@@ -7,8 +7,8 @@ public class FunctionBody {
     ArrayList<Statement> statements;
 
     public FunctionBody(){
-        declarations = new ArrayList<VariableDeclaration>();
-        statements = new ArrayList<Statement>();
+        this.declarations = new ArrayList<VariableDeclaration>();
+        this.statements = new ArrayList<Statement>();
     }
 
     public void addDeclaration(VariableDeclaration d){

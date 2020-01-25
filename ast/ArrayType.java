@@ -5,13 +5,13 @@ public class ArrayType extends Type{
     IntergerLiteral size;
 
     public ArrayType(){
-        type = null;
-        size = null;
+        this.type = null;
+        this.size = null;
     }
 
     public ArrayType(Type type, IntergerLiteral size){
-        type = type;
-        size = size;
+        this.type = type;
+        this.size = size;
     }
 
     public void setType(Type type){

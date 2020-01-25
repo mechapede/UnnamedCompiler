@@ -1,6 +1,6 @@
 package ast;
 
-public class FormalParameter{
+public class FormalParameter extends TreeNode{
     Type type;
     Identifier identifier;
 

@@ -1,7 +1,17 @@
 package ast;
 
-public abstract class Expression extends Statement {
+public class Expression extends Statement {
 
-    //public abstract Object accept(Visitor V);
+    public Expression(){
+        super();
+    }
+
+    public Expression(int tokenline, int tokenchar){
+        super(tokenline,tokenchar);
+    }
+
+    public Object accept(Visitor v){
+         return null;
+    }
 
 }

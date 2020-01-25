@@ -44,7 +44,11 @@ function returns [Function f]
     f = new Function();
 }
     :
-    d=functionDecl{f.setDeclaration(d);} b=functionBody{f.setBody(b);}
+    d=functionDecl{f.setDeclaration(d);
+                   //f.setTokenLine(d.getLine()); //TODO: pushup line numbers
+                   //f.setTokenChar(d.getCharPositionInLine());
+                   }
+    b=functionBody{f.setBody(b);}
 	;
 
 functionDecl returns [FunctionDeclaration fd]
@@ -115,20 +119,20 @@ compoundType returns [Type t]
 
 statement returns [Statement s]
     :
-    (ss=emptystatement)|
+    ((ss=emptystatement)|
     (ss=ifstatement)|
     (ss=whilestatement)|
     (ss=printstatement)|
     (ss=printlnstatement)|
     (ss=returnstatement)|
     (ss=assignmentstatement)|
-    (ss=arrayassignmentexprstatement) {s = ss;}
+    (ss=arrayassignmentexprstatement)) {s=ss;}
     ;
 
 emptystatement returns [Statement s]
 @init
 {
-    s = null; //TODO: maybe need a class for this to print
+    s = null; //TODO: exclude this from block and functionbody
 }
     :
     ';'
@@ -199,7 +203,7 @@ arrayassignmentexprstatement returns [Statement s]
 }
 @after
 {
-    //s = as;
+    s = as;
 }
     :
     ( (identifier '[' expr ']' '=' expr ) => (i=identifier{as.setIdentifier(i);} '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);}) | expr ) ';'
@@ -216,30 +220,30 @@ block returns [Block b]
 
 expr returns [Expression e]
     :
-    ee=ltop{e = ee;} ('==' ee=ltop{e = new EqualityExpression(e,ee);})*
+    ee=ltop{e = ee;} (z='==' ee=ltop{e = new EqualityExpression(z.getLine(),z.getCharPositionInLine(),e,ee);})*
     ;
 
 ltop returns [Expression e]
     :
-    ee=addop{e = ee;} ('<' ee=addop{e = new LessThanExpression(e,ee);})*
+    ee=addop{e = ee;} (z='<' ee=addop{e = new LessThanExpression(z.getLine(),z.getCharPositionInLine(),e,ee);})*
     ;
 
 addop returns [Expression e]
     :
-    ee=multiop{e=ee;} ('+' ee=multiop{e = new AddExpression(e,ee);} |
-                       '-' ee=multiop{e = new SubtractExpression(e,ee);} )*
+    ee=multiop{e=ee;} (z='+' ee=multiop{e = new AddExpression(z.getLine(),z.getCharPositionInLine(),e,ee);} |
+                       z='-' ee=multiop{e = new SubtractExpression(z.getLine(),z.getCharPositionInLine(),e,ee);} )*
     ;
 
 multiop returns [Expression e]
     :
-    ee=atom{e=ee;} ('*' ee=atom{e = new MultiExpression(e,ee);})*
+    ee=atom{e=ee;} (z='*' ee=atom{e = new MultiExpression(z.getLine(),z.getCharPositionInLine(),e,ee);})*
     ;
 
 atom returns [Expression e]
     :
-    (ee=getexpr)|
+    ((ee=getexpr)|
     (ee=literalexpr)
-    | ('(' ee=expr ')') {e = ee;}
+    | ('(' ee=expr ')')) {e = ee;}
     ;
 
 getexpr returns [Expression e]
@@ -268,7 +272,7 @@ literalexpr returns [Expression e]
     :
     (n=STRINGCONSTANT{e = new StringLiteral(n.getText());})|
     (n=INTERGERCONSTANT{e = new IntergerLiteral(Integer.parseInt(n.getText()));})|
-    (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getText().charAt(0));})|
+    (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getText().charAt(1));})|
     (n=FLOATCONSTANT{e = new FloatLiteral(Float.parseFloat(n.getText()));})|
     (n=TRUE{e = new BooleanLiteral(true);})|
     (n=FALSE{e = new BooleanLiteral(false);})
@@ -290,16 +294,16 @@ exprMore returns [Expression e]
 
 identifier returns [Identifier s]
     :
-    i=ID{s = new Identifier(i.getText());}
+    i=ID{s = new Identifier(i.getLine(),i.getCharPositionInLine(),i.getText());}
 	;
 
 type returns [Type t]:
-    (INTTYPE{t = new IntergerType();}) |
-    (FLOATTYPE{t = new FloatType();}) |
-    (CHARTYPE{t = new CharType();}) |
-    (STRINGTYPE{t = new StringType();}) |
-    (BOOLTYPE{t = new BooleanType();}) |
-    (VOIDTYPE{t = new VoidType();})
+    (l=INTTYPE{t = new IntergerType(l.getLine(),l.getCharPositionInLine());}) |
+    (l=FLOATTYPE{t = new FloatType(l.getLine(),l.getCharPositionInLine());}) |
+    (l=CHARTYPE{t = new CharType(l.getLine(),l.getCharPositionInLine());}) |
+    (l=STRINGTYPE{t = new StringType(l.getLine(),l.getCharPositionInLine());}) |
+    (l=BOOLTYPE{t = new BooleanType(l.getLine(),l.getCharPositionInLine());}) |
+    (l=VOIDTYPE{t = new VoidType(l.getLine(),l.getCharPositionInLine());})
 	;
 
 /* Lexer section */

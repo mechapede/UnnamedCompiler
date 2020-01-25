@@ -12,7 +12,7 @@ compiler:
 	javac -cp .:$(CLASSPATH) *.java
 
 clean:
-	rm *.class $(GNAME)*.java $(GNAME).tokens
+	rm *.class $(GNAME)*.java $(GNAME).tokens ast/*.class
 
 run:
 	java -cp .:$(CLASSPATH) Compiler

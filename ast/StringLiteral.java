@@ -1,14 +1,14 @@
 package ast;
 
 public class StringLiteral extends Expression{
-    String var;
+    String val;
 
     public StringLiteral(String var){
-        this.var = var;
+        this.val = val;
     }
 
     public Object accept(Visitor v){
          return v.visit(this);
     }
-    
+
 }

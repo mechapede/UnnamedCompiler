@@ -31,7 +31,7 @@ public class Compiler {
 			Program p = parser.program();
             PrintVisitor v = new PrintVisitor();
             p.accept(v);
-            //System.out.println(p.getFunctionCount());
+            System.out.println(v.getOut());
 		}
 		catch (RecognitionException e )	{
 			// A lexical or parsing error occured.

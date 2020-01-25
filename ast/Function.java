@@ -1,6 +1,6 @@
 package ast;
 
-public class Function{
+public class Function extends TreeNode{
     FunctionDeclaration decl;
     FunctionBody body;
 
