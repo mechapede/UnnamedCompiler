@@ -82,7 +82,6 @@ public class PrintVisitor extends Visitor{
             fb.getStatement(i).accept(this);
             out += "\n";
         }
-        //System.out.print(out);
         return null;
     }
 
@@ -95,18 +94,34 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(IfStatement i){
+        out += "if (";
+        i.expression.accept(this);
+        out += ")\n";
+        i.block.accept(this);
+        if( i.elseblock != null ){
+            out += getIndent() + "else\n";
+            i.elseblock.accept(this);
+        }
         return null;
     }
 
     public Object visit(WhileStatement ws){
+        out += "while (";
+        ws.expression.accept(this);
+        out += ")\n";
+        ws.block.accept(this);
         return null;
     }
 
     public Object visit(PrintStatement ps){
+        out += "print ";
+        ps.expression.accept(this);
         return null;
     }
 
     public Object visit(PrintLnStatement ps){
+        out += "println ";
+        ps.expression.accept(this);
         return null;
     }
 
@@ -136,43 +151,82 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(Block b){
+        out += getIndent() + "{\n";
+        indent += 1;
+        for(int i = 0; i < b.getStatementCount(); i++){
+            out += getIndent();
+            b.getStatement(i).accept(this);
+            out += "\n";
+        }
+        indent -= 1;
+        out += getIndent() + "}\n";
         return null;
     }
 
     public Object visit(ExpressionList el){
+        if( el.getExpressionCount() > 0){
+            el.getExpression(0).accept(this);
+        }
+        for(int i = 1; i < el.getExpressionCount(); i++){
+            out += ", ";
+            el.getExpression(i).accept(this);
+        }
         return null;
     }
 
     public Object visit(EqualityExpression ee){
+        ee.e1.accept(this);
+        out += "==";
+        ee.e2.accept(this);
         return null;
     }
 
     public Object visit(LessThanExpression ls){
+        ls.e1.accept(this);
+        out += "<";
+        ls.e2.accept(this);
         return null;
     }
 
     public Object visit(AddExpression ae){
+        ae.e1.accept(this);
+        out += "+";
+        ae.e2.accept(this);
         return null;
     }
 
     public Object visit(SubtractExpression se){
+        se.e1.accept(this);
+        out += "+";
+        se.e2.accept(this);
         return null;
     }
 
     public Object visit(MultiExpression me){
+        me.e1.accept(this);
+        out += "*";
+        me.e2.accept(this);
         return null;
     }
 
     public Object visit(FunctionCall fc){
+        fc.name.accept(this);
+        out += "(";
+        fc.args.accept(this);
+        out += ")";
         return null;
     }
 
     public Object visit(ArrayValue av){
+        av.identifier.accept(this);
+        out += "[";
+        av.index.accept(this);
+        out += "]";
         return null;
     }
 
     public Object visit(IdentifierValue iv){
-        out += iv.identifier.accept(this);
+        iv.identifier.accept(this);
         return null;
     }
 

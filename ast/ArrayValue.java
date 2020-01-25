@@ -2,11 +2,11 @@ package ast;
 
 public class ArrayValue extends Expression{
     Identifier identifier;
-    Expression id;
+    Expression index;
 
-    public ArrayValue(Identifier identifier,Expression id){
+    public ArrayValue(Identifier identifier,Expression index){
         this.identifier = identifier;
-        this.id = id;
+        this.index = index;
     }
 
     public Object accept(Visitor v){
