@@ -1,6 +1,6 @@
 package ast;
 
-public class Expression extends Statement {
+public class Expression extends TreeNode{
 
     public Expression(){
         super();
