@@ -89,7 +89,7 @@ functionBody returns [FunctionBody fb]
     fb = new FunctionBody();
 }
     :
-    '{' (v=vardecl{fb.addDeclaration(v);})* (s=statement{fb.addStatement(s);})* '}'
+    '{' (v=vardecl{fb.addDeclaration(v);})* (s=statement{if(s!= null) fb.addStatement(s);})* '}' //filter out empty statements
 	;
 
 vardecl returns [VariableDeclaration va]
@@ -125,8 +125,9 @@ statement returns [Statement s]
     (ss=printstatement)|
     (ss=printlnstatement)|
     (ss=returnstatement)|
-    (ss=assignmentstatement)|
-    (ss=arrayassignmentexprstatement)) {s=ss;}
+    ((identifier '=') => (ss=assignmentstatement))|
+    ((identifier '[' expr ']' '=') => (ss=arrayassignment))|
+    (ss=exprstatement)) {s=ss;}
     ;
 
 emptystatement returns [Statement s]
@@ -195,7 +196,7 @@ assignmentstatement returns [Statement s]
     i=identifier{as.setIdentifier(i);} '=' e=expr{as.setExpression(e);} ';'
     ;
 
-arrayassignmentexprstatement returns [Statement s]
+arrayassignment returns [Statement s]
 @init
 {
     s = null;
@@ -206,7 +207,12 @@ arrayassignmentexprstatement returns [Statement s]
     s = as;
 }
     :
-    ( (identifier '[' expr ']' '=' expr ) => (i=identifier{as.setIdentifier(i);} '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);}) | expr ) ';'
+    ( (i=identifier{as.setIdentifier(i);} '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);})) ';'
+    ;
+
+exprstatement returns [Statement s]
+    :
+    e=expr{s = new ExpressionStatement(e);} ';'
     ;
 
 block returns [Block b]
@@ -215,7 +221,7 @@ block returns [Block b]
     b = new Block();
 }
     :
-    '{' (s=statement{b.addStatement(s);})* '}'
+    '{' (s=statement{if(s!= null) b.addStatement(s);})* '}' //filter out empty statements
     ;
 
 expr returns [Expression e]

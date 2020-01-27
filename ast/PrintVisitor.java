@@ -41,6 +41,7 @@ public class PrintVisitor extends Visitor{
         indent -= 1;
         return null;
     }
+
     public Object visit(FunctionDeclaration fd){
         fd.type.accept(this);
         out += " ";
@@ -93,13 +94,19 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
+    public Object visit(ExpressionStatement es){
+        es.expression.accept(this);
+        out += ";";
+        return null;
+    }
+
     public Object visit(IfStatement i){
         out += "if (";
         i.expression.accept(this);
         out += ")\n";
         i.block.accept(this);
         if( i.elseblock != null ){
-            out += getIndent() + "else\n";
+            out += getIndent() + "\nelse\n";
             i.elseblock.accept(this);
         }
         return null;
@@ -159,7 +166,7 @@ public class PrintVisitor extends Visitor{
             out += "\n";
         }
         indent -= 1;
-        out += getIndent() + "}\n";
+        out += getIndent() + "}";
         return null;
     }
 
@@ -175,37 +182,47 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(EqualityExpression ee){
+        out += "(";
         ee.e1.accept(this);
         out += "==";
         ee.e2.accept(this);
+        out += ")";
         return null;
     }
 
     public Object visit(LessThanExpression ls){
+        out += "(";
         ls.e1.accept(this);
         out += "<";
         ls.e2.accept(this);
+        out += ")";
         return null;
     }
 
     public Object visit(AddExpression ae){
+        out += "(";
         ae.e1.accept(this);
         out += "+";
         ae.e2.accept(this);
+        out += ")";
         return null;
     }
 
     public Object visit(SubtractExpression se){
+        out += "(";
         se.e1.accept(this);
         out += "+";
         se.e2.accept(this);
+        out += ")";
         return null;
     }
 
     public Object visit(MultiExpression me){
+        out += "(";
         me.e1.accept(this);
         out += "*";
         me.e2.accept(this);
+        out += ")";
         return null;
     }
 

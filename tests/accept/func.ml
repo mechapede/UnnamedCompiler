@@ -42,6 +42,7 @@ char[4] loopback () {
     mmm[1] = 'b';
     mmm[2] = 'c';
     mmm[3] = 'd';
+    return mmm;
 }
 
 void main () {

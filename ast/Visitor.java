@@ -10,6 +10,7 @@ public abstract class Visitor{
     public abstract Object visit(FormalParameter fp);
     public abstract Object visit(FunctionBody fb);
     public abstract Object visit(VariableDeclaration vd);
+    public abstract Object visit(ExpressionStatement el);
     public abstract Object visit(IfStatement i);
     public abstract Object visit(WhileStatement ws);
     public abstract Object visit(PrintStatement ps);
