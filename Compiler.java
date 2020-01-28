@@ -28,15 +28,15 @@ public class Compiler {
             System.out.println(v.getOut());
 		}
 		catch (RecognitionException e )	{
-            System.out.println("Compiler failed. See errors below:");
+            System.err.println("Compiler failed. See errors below:");
 			// A lexical or parsing error occured.
 			// ANTLR will have already printed information on the
 			// console due to code added to the grammar.  So there is
 			// nothing to do here.
 		}
 		catch (Exception e) {
-            System.out.println("Compiler failed. See errors below:");
-			System.out.println(e);
+            System.err.println("Compiler failed. See errors below:");
+			System.err.println(e);
 			e.printStackTrace();
 		}
 	}

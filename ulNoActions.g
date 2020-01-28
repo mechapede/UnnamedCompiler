@@ -131,8 +131,8 @@ statement returns [Statement s]
     (ss=printstatement)|
     (ss=printlnstatement)|
     (ss=returnstatement)|
-    ((identifier '=') => (ss=assignmentstatement))|
-    ((identifier '[' expr ']' '=') => (ss=arrayassignment))|
+    ((identifier '=' expr ';') => (ss=assignmentstatement))|
+    ((identifier '[' expr ']' '=' expr ';') => (ss=arrayassignment))|
     (ss=exprstatement)) {s=ss;}
     ;
 
