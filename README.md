@@ -4,7 +4,7 @@ Compiler for Csc435
 Instructions
 1) Add antlr to the CLASSPATH environment variable.
 2) Run the makefile (run `make` in directory), there should be no errors
-3) To run the testcases, run test.py (requires python version >= 3.7)
+3) To run the testcases, run runtests.py (requires python version >= 3.7)
 4) To run do: java Compiler FILENAME
 5) Output of the AST will be outputted, or error messages if it fails
 
