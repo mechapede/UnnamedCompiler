@@ -1,6 +1,6 @@
 package ast;
 
-public class VariableDeclaration{
+public class VariableDeclaration extends TreeNode{
     Type type;
     Identifier identifier;
 

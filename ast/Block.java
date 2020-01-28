@@ -2,7 +2,7 @@ package ast;
 
 import java.util.ArrayList;
 
-public class Block{
+public class Block extends TreeNode{
     ArrayList<Statement> statements;
 
     public Block(){

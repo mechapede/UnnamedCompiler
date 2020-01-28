@@ -1,6 +1,6 @@
 package ast;
 
-public class FunctionDeclaration{
+public class FunctionDeclaration extends TreeNode{
     Type type;
     Identifier id;
     FormalParameterList pl;

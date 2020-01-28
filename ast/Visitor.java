@@ -1,8 +1,7 @@
+/* Contains the function defintions for all visitors for the callbacks */
 package ast;
 
 public abstract class Visitor{
-
-    //TODO: if needed add a StatementList/DeclarationList to simplify things
     public abstract Object visit(Program p);
     public abstract Object visit(Function p);
     public abstract Object visit(FunctionDeclaration fd);

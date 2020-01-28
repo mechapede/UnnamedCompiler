@@ -14,6 +14,12 @@ public class ArrayType extends Type{
         this.size = size;
     }
 
+    public ArrayType(int tokenline, int tokenchar,Type type, IntergerLiteral size){
+        super(tokenline,tokenchar);
+        this.type = type;
+        this.size = size;
+    }
+
     public void setType(Type type){
         this.type = type;
     }

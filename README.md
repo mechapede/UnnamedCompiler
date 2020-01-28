@@ -1,15 +1,15 @@
-# UnnamedCompiler
+# UnnamedCompiler by Matthew MacDonald
 Compiler for Csc435
 
-CLASSPATH=/usr/share/java/stringtemplate.jar:/usr/share/java/stringtemplate4.jar:/usr/share/java/antlr3.jar:/usr/share/java/antlr3-runtime.jar
-javac -cp .:$CLASSPATH Compiler.java
-java -cp .:$CLASSPATH Compiler foo
+Instructions
+1) Add antlr to the CLASSPATH environment variable.
+2) Run the makefile (run `make` in directory), there should be no errors
+3) To run the testcases, run test.py (requires python version >= 3.7)
+4) To run do: java Compiler FILENAME
+5) Output of the AST will be outputted, or error messages if it fails
 
-type returns [Type t]:
-    (i=INTTYPE{t = new IntegerType(Integer.parseInt(i.getText()));}) |
-    (i=FLOATTYPE{t = new FloatType(Float.parseFloat(i.getText()));}) |
-    (i=CHARTYPE{t = new CharType(i.getText().charAt(0));}) |
-    (i=STRINGTYPE{t = new StringType(i.getText())}) |
-    (i=BOOLTYPE) |
-    (i=VOIDTYPE)
-	;
+Code Structure
+1) The Compiler
+2) ulNoActions contains all the grammer and anotation information
+3) The ast directory includes the visitors and the tree nodes
+4) The test directory contains accept and reject tests

@@ -3,7 +3,8 @@ package ast;
 public class StringLiteral extends Expression{
     String val;
 
-    public StringLiteral(String var){
+    public StringLiteral(int tokenline,int tokenchar,String val){
+        super(tokenline,tokenchar);
         this.val = val;
     }
 

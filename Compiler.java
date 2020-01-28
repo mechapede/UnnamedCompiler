@@ -1,9 +1,5 @@
-/*
- * Compiler.java
- *
- * A starting place for the unnamed language compiler for CSC 435/535
- *
- */
+/*Compiler - core glue code for running the parser and generating the tree
+              also prints out the tree output if it accepts */
 
 import org.antlr.runtime.*;
 import java.io.*;
@@ -21,8 +17,6 @@ public class Compiler {
 			input = new ANTLRInputStream(new FileInputStream(args[0]));
 		}
 
-		// The name of the grammar here is "ulNoActions",
-		// so ANTLR generates ulNoActionsLexer and ulNoActionsParser
 		ulNoActionsLexer lexer = new ulNoActionsLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		ulNoActionsParser parser = new ulNoActionsParser(tokens);
@@ -34,12 +28,14 @@ public class Compiler {
             System.out.println(v.getOut());
 		}
 		catch (RecognitionException e )	{
+            System.out.println("Compiler failed. See errors below:");
 			// A lexical or parsing error occured.
 			// ANTLR will have already printed information on the
 			// console due to code added to the grammar.  So there is
 			// nothing to do here.
 		}
 		catch (Exception e) {
+            System.out.println("Compiler failed. See errors below:");
 			System.out.println(e);
 			e.printStackTrace();
 		}

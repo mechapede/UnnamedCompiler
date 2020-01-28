@@ -2,10 +2,10 @@ int findmax ( int[10] foo, int index ) {
         int max;
         int next_max;
         max = foo[index];
-        if ( index < 10 ) {
+        if ( index < 9 ) {
                 next_max = findmax(foo,index+1);
-                if( max < next_max ) { max = nextmax; }                
-        }       
+                if( max < next_max ) { max = nextmax; }
+        }
         return max;
 }
 
@@ -22,6 +22,6 @@ void main () {
         foo[7] = 22;
         foo[8] = 22;
         foo[9] = 11;
-        x = findmax(foo);
+        x = findmax(foo,1);
         println x;
 }

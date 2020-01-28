@@ -2,7 +2,7 @@ package ast;
 
 import java.util.ArrayList;
 
-public class FunctionBody {
+public class FunctionBody extends TreeNode {
     ArrayList<VariableDeclaration> declarations;
     ArrayList<Statement> statements;
 

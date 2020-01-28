@@ -3,7 +3,8 @@ package ast;
 public class BooleanLiteral extends Expression{
     boolean val;
 
-    public BooleanLiteral(boolean val){
+    public BooleanLiteral(int tokenline,int tokenchar,boolean val){
+        super(tokenline,tokenchar);
         this.val = val;
     }
 

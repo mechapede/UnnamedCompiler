@@ -20,6 +20,7 @@ grammar ulNoActions;
             reportError(e);
             throw e;
     }
+
 }
 
 @rulecatch {
@@ -44,10 +45,7 @@ function returns [Function f]
     f = new Function();
 }
     :
-    d=functionDecl{f.setDeclaration(d);
-                   //f.setTokenLine(d.getLine()); //TODO: pushup line numbers
-                   //f.setTokenChar(d.getCharPositionInLine());
-                   }
+    d=functionDecl{f.setDeclaration(d);f.setTokenLine(d.getTokenLine());f.setTokenChar(d.getTokenChar());}
     b=functionBody{f.setBody(b);}
 	;
 
@@ -57,16 +55,19 @@ functionDecl returns [FunctionDeclaration fd]
     fd = new FunctionDeclaration();
 }
     :
-    t=compoundType{fd.setType(t);} i=identifier{fd.setIdentifier(i);} '(' (p=formalParameters{fd.setParameters(p);})? ')'
+    t=compoundType{fd.setType(t);fd.setTokenLine(t.getTokenLine());fd.setTokenChar(t.getTokenChar());}
+    i=identifier{fd.setIdentifier(i);}
+    '(' (p=formalParameters{fd.setParameters(p);})? ')'
 	;
 
 formalParameters returns [FormalParameterList pl]
 @init
 {
-    pl = new FormalParameterList(); //TODO fix creating Formal Parameters
+    pl = new FormalParameterList();
 }
     :
-    f1=formalParameter{pl.addParameter(f1);} (fn=moreFormals{pl.addParameter(fn);})*
+    f1=formalParameter{pl.addParameter(f1);pl.setTokenLine(f1.getTokenLine());pl.setTokenChar(f1.getTokenChar());}
+    (fn=moreFormals{pl.addParameter(fn);})*
     ;
 
 moreFormals returns [FormalParameter fp]
@@ -80,7 +81,8 @@ formalParameter returns [FormalParameter fp]
     fp = new FormalParameter();
 }
     :
-    c=compoundType{fp.setType(c);} i=identifier{fp.setIdentifier(i);}
+    c=compoundType{fp.setType(c); fp.setTokenLine(c.getTokenLine()); fp.setTokenChar(c.getTokenChar());}
+    i=identifier{fp.setIdentifier(i);}
     ;
 
 functionBody returns [FunctionBody fb]
@@ -89,16 +91,19 @@ functionBody returns [FunctionBody fb]
     fb = new FunctionBody();
 }
     :
-    '{' (v=vardecl{fb.addDeclaration(v);})* (s=statement{if(s!= null) fb.addStatement(s);})* '}' //filter out empty statements
+    k='{'{fb.setTokenLine(k.getLine()); fb.setTokenChar(k.getCharPositionInLine());}
+    (v=vardecl{fb.addDeclaration(v);})*
+    (s=statement{if(s!= null) fb.addStatement(s);})* '}' //filter out empty statements
 	;
 
 vardecl returns [VariableDeclaration va]
 @init
 {
-    	va = new VariableDeclaration(); //TODO fix populating
+    	va = new VariableDeclaration();
 }
     :
-    t=compoundType{va.setType(t);} i=identifier{va.setIdentifier(i);} ';'
+    t=compoundType{va.setType(t);va.setTokenLine(t.getTokenLine()); va.setTokenChar(t.getTokenChar());}
+    i=identifier{va.setIdentifier(i);} ';'
     ;
 
 compoundType returns [Type t]
@@ -110,11 +115,12 @@ compoundType returns [Type t]
 @after
 {
     if(array){
-        t = new ArrayType(t,array_size);
+        t = new ArrayType(t.getTokenLine(),t.getTokenChar(),t,array_size);
     }
 }
     :
-    tb=type{t=tb;} ( '[' n=INTERGERCONSTANT{array=true; array_size=new IntergerLiteral(Integer.parseInt(n.getText()));} ']' )?
+    tb=type{t=tb;}
+    ( '[' n=INTERGERCONSTANT{array=true; array_size=new IntergerLiteral(n.getLine(),n.getCharPositionInLine(),Integer.parseInt(n.getText()));} ']' )?
     ;
 
 statement returns [Statement s]
@@ -133,7 +139,7 @@ statement returns [Statement s]
 emptystatement returns [Statement s]
 @init
 {
-    s = null; //TODO: exclude this from block and functionbody
+    s = null; // this object will be excluded in further rules
 }
     :
     ';'
@@ -150,7 +156,9 @@ ifstatement returns [Statement s]
     s = f;
 }
     :
-    IF '(' e=expr{f.setExpression(e);} ')' b=block{f.setBlock(b);} (ELSE be=block{f.setElseBlock(be);})?
+    j=IF{f.setTokenLine(j.getLine());f.setTokenChar(j.getCharPositionInLine());} '(' e=expr{f.setExpression(e);} ')'
+    b=block{f.setBlock(b);}
+    (ELSE be=block{f.setElseBlock(be);})?
     ;
 
 whilestatement returns [Statement s]
@@ -164,22 +172,23 @@ whilestatement returns [Statement s]
     s = w;
 }
     :
-    WHILE '(' e=expr{w.setExpression(e);} ')' b=block{w.setBlock(b);}
+    j=WHILE{w.setTokenLine(j.getLine());w.setTokenChar(j.getCharPositionInLine());}
+    '(' e=expr{w.setExpression(e);} ')' b=block{w.setBlock(b);}
     ;
 
 printstatement returns [Statement s]
     :
-    PRINT e=expr{s = new PrintStatement(e);} ';'
+    j=PRINT e=expr{s = new PrintStatement(j.getLine(),j.getCharPositionInLine(),e);} ';'
     ;
 
 printlnstatement returns [Statement s]
     :
-    PRINTLN e=expr{s = new PrintLnStatement(e);} ';'
+    j=PRINTLN e=expr{s = new PrintLnStatement(j.getLine(),j.getCharPositionInLine(),e);} ';'
     ;
 
 returnstatement returns [Statement s]
     :
-    RETURN e=expr{s = new ReturnStatement(e);} ';'
+    j=RETURN e=expr{s = new ReturnStatement(j.getLine(),j.getCharPositionInLine(),e);} ';'
     ;
 
 assignmentstatement returns [Statement s]
@@ -193,7 +202,8 @@ assignmentstatement returns [Statement s]
     s = as;
 }
     :
-    i=identifier{as.setIdentifier(i);} '=' e=expr{as.setExpression(e);} ';'
+    i=identifier{as.setIdentifier(i);as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
+    '=' e=expr{as.setExpression(e);} ';'
     ;
 
 arrayassignment returns [Statement s]
@@ -207,12 +217,13 @@ arrayassignment returns [Statement s]
     s = as;
 }
     :
-    ( (i=identifier{as.setIdentifier(i);} '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);})) ';'
+    ( (i=identifier{as.setIdentifier(i); as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
+    '[' index=expr{as.setIndexExpression(index);} ']' '=' v=expr{as.setExpression(v);})) ';'
     ;
 
 exprstatement returns [Statement s]
     :
-    e=expr{s = new ExpressionStatement(e);} ';'
+    e=expr{s = new ExpressionStatement(e.getTokenLine(),e.getTokenChar(),e);} ';'
     ;
 
 block returns [Block b]
@@ -221,7 +232,8 @@ block returns [Block b]
     b = new Block();
 }
     :
-    '{' (s=statement{if(s!= null) b.addStatement(s);})* '}' //filter out empty statements
+    j='{'{b.setTokenLine(j.getLine()); b.setTokenChar(j.getCharPositionInLine());}
+    (s=statement{if(s!= null) b.addStatement(s);})* '}' //filter out empty statements
     ;
 
 expr returns [Expression e]
@@ -262,11 +274,11 @@ getexpr returns [Expression e]
 @after
 {
     if( list != null){
-      e = new FunctionCall(id,list);
+      e = new FunctionCall(id.getTokenLine(),id.getTokenChar(),id,list);
     }else if( index != null ) {
-      e = new ArrayValue(id,index);
+      e = new ArrayValue(id.getTokenLine(),id.getTokenChar(),id,index);
     } else{
-      e = new IdentifierValue(id);
+      e = new IdentifierValue(id.getTokenLine(),id.getTokenChar(),id);
     }
 }
     :
@@ -276,12 +288,12 @@ getexpr returns [Expression e]
 
 literalexpr returns [Expression e]
     :
-    (n=STRINGCONSTANT{e = new StringLiteral(n.getText());})|
-    (n=INTERGERCONSTANT{e = new IntergerLiteral(Integer.parseInt(n.getText()));})|
-    (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getText().charAt(1));})|
-    (n=FLOATCONSTANT{e = new FloatLiteral(Float.parseFloat(n.getText()));})|
-    (n=TRUE{e = new BooleanLiteral(true);})|
-    (n=FALSE{e = new BooleanLiteral(false);})
+    (n=STRINGCONSTANT{e = new StringLiteral(n.getLine(),n.getCharPositionInLine(),n.getText());})|
+    (n=INTERGERCONSTANT{e = new IntergerLiteral(n.getLine(),n.getCharPositionInLine(),Integer.parseInt(n.getText()));})|
+    (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getLine(),n.getCharPositionInLine(),n.getText().charAt(1));})|
+    (n=FLOATCONSTANT{e = new FloatLiteral(n.getLine(),n.getCharPositionInLine(),Float.parseFloat(n.getText()));})|
+    (n=TRUE{e = new BooleanLiteral(n.getLine(),n.getCharPositionInLine(),true);})|
+    (n=FALSE{e = new BooleanLiteral(n.getLine(),n.getCharPositionInLine(),false);})
     ;
 
 exprList returns [ExpressionList el]

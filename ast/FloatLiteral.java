@@ -3,7 +3,8 @@ package ast;
 public class FloatLiteral extends Expression{
     float val;
 
-    public FloatLiteral(float val){
+    public FloatLiteral(int tokenline,int tokenchar,float val){
+        super(tokenline,tokenchar);
         this.val = val;
     }
 

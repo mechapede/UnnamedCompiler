@@ -1,3 +1,4 @@
+/* Returns a string representation of the parse tree */
 package ast;
 
 public class PrintVisitor extends Visitor{
@@ -106,7 +107,7 @@ public class PrintVisitor extends Visitor{
         out += ")\n";
         i.block.accept(this);
         if( i.elseblock != null ){
-            out += getIndent() + "\nelse\n";
+            out += getIndent() + "\n" + getIndent() + "else\n";
             i.elseblock.accept(this);
         }
         return null;
@@ -123,12 +124,14 @@ public class PrintVisitor extends Visitor{
     public Object visit(PrintStatement ps){
         out += "print ";
         ps.expression.accept(this);
+        out += ";";
         return null;
     }
 
     public Object visit(PrintLnStatement ps){
         out += "println ";
         ps.expression.accept(this);
+        out += ";";
         return null;
     }
 
@@ -248,7 +251,7 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(StringLiteral sl){
-        out += "\"" + sl.val + "\"";
+        out += sl.val; //TODO: remove quotes from string
         return null;
     }
 
