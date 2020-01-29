@@ -13,5 +13,3 @@ compiler:
 clean:
 	rm *.class $(GNAME)*.java $(GNAME).tokens ast/*.class
 
-run:
-	java -cp .:$(CLASSPATH) Compiler
