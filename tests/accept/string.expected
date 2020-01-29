@@ -1,0 +1,8 @@
+void main ()
+{
+    string foo;
+    int i;
+    foo="";
+    i=(0-10);
+}
+

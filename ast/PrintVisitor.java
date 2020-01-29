@@ -214,7 +214,7 @@ public class PrintVisitor extends Visitor{
     public Object visit(SubtractExpression se){
         out += "(";
         se.e1.accept(this);
-        out += "+";
+        out += "-";
         se.e2.accept(this);
         out += ")";
         return null;
@@ -232,7 +232,9 @@ public class PrintVisitor extends Visitor{
     public Object visit(FunctionCall fc){
         fc.name.accept(this);
         out += "(";
-        fc.args.accept(this);
+        if(fc.args != null){
+            fc.args.accept(this);
+        }
         out += ")";
         return null;
     }

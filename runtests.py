@@ -16,8 +16,6 @@ def test():
     passed_tests = 0
     total_tests = len(accept_tests) + len(reject_tests);
 
-    print(accept_tests)
-
     for test in accept_tests:
         result = subprocess.run(["java","Compiler","tests/accept/" + test + ".ul"],capture_output=True,check=True)
         with open("tests/accept/" + test + ".expected","r") as fp:

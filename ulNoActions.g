@@ -267,13 +267,14 @@ atom returns [Expression e]
 getexpr returns [Expression e]
 @init
 {
+    boolean isFunction = false;
     ExpressionList list = null;
     Expression index  = null;
     Identifier id = null;
 }
 @after
 {
-    if( list != null){
+    if( isFunction ){
       e = new FunctionCall(id.getTokenLine(),id.getTokenChar(),id,list);
     }else if( index != null ) {
       e = new ArrayValue(id.getTokenLine(),id.getTokenChar(),id,index);
@@ -282,7 +283,7 @@ getexpr returns [Expression e]
     }
 }
     :
-    i=identifier{id = i;} ( '[' ei=expr{index=ei;} ']' | '(' el=exprList{list=el;} ')' )?
+    i=identifier{id = i;} ( '[' ei=expr{index=ei;} ']' | '(' (el=exprList{list=el;})? ')'{isFunction=true;} )?
     ;
 
 

@@ -39,7 +39,7 @@ void main ()
     {
         print "Issues with PLUS, MULTI and EQUALEQUAL";
     }
-    if ((((2*4)+3)==((0+3)+(2*4))))
+    if ((((2*4)-3)==((0-3)+(2*4))))
     {
     }    
     else
