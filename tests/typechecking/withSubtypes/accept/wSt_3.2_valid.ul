@@ -1,0 +1,39 @@
+void main() {
+    string s1;
+    string s2;
+    string s3;
+
+    int a;
+    int b;
+    int c;
+
+    float f1;
+    float f2;
+    float f3;
+
+    char c1;
+    char c2;
+    char c3;
+
+    boolean bool;
+
+    int[4] arr;
+    arr[1] = 1;
+    print arr[1];
+
+    s1 = "a";
+    s2 = "b";
+    s3 = s1 + s2;
+
+    c1 = 'a';
+    c2 = 'b';
+    c3 = c2 - c1;
+
+    f1 = 1.1;
+    f2 = 2.2;
+    f3 = f1 * f2;
+
+    bool = (c1 < c2);
+
+    bool = (f1 == f2);
+}

@@ -2,27 +2,27 @@ package ast;
 
 import java.util.ArrayList;
 
-public class Block extends TreeNode{
-    ArrayList<Statement> statements;
+public class Block extends TreeNode {
+        ArrayList<Statement> statements;
 
-    public Block(){
-        statements = new ArrayList<Statement>();
-    }
+        public Block() {
+            statements = new ArrayList<Statement>();
+        }
 
-    public void addStatement(Statement s){
-        statements.add(s);
-    }
+        public void addStatement(Statement s) {
+            statements.add(s);
+        }
 
-    public Statement getStatement(int index){
-        return statements.get(index);
-    }
+        public Statement getStatement(int index) {
+            return statements.get(index);
+        }
 
-    public int getStatementCount(){
-        return statements.size();
-    }
+        public int getStatementCount() {
+            return statements.size();
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

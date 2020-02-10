@@ -1,17 +1,17 @@
 package ast;
 
-public class ArrayValue extends Expression{
-    Identifier identifier;
-    Expression index;
+public class ArrayValue extends Expression {
+        Identifier name;
+        Expression index;
 
-    public ArrayValue(int tokenline, int tokenchar,Identifier identifier,Expression index){
-        super(tokenline,tokenchar);
-        this.identifier = identifier;
-        this.index = index;
-    }
+        public ArrayValue(Identifier name, Expression index, int tokenline, int tokenchar) {
+            super(tokenline,tokenchar);
+            this.name = name;
+            this.index = index;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

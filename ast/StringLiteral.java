@@ -1,15 +1,15 @@
 package ast;
 
-public class StringLiteral extends Expression{
-    String val;
+public class StringLiteral extends Expression {
+        String value;
 
-    public StringLiteral(int tokenline,int tokenchar,String val){
-        super(tokenline,tokenchar);
-        this.val = val;
-    }
+        public StringLiteral(String value, int tokenline, int tokenchar) {
+            super(tokenline,tokenchar);
+            this.value = value;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

@@ -1,0 +1,7 @@
+void main() {
+    string s;
+    char c;
+    boolean a;
+    
+    a = c < s;
+}

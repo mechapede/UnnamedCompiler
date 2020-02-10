@@ -1,30 +1,30 @@
 package ast;
 
-public class ArrayAssignment extends Statement{
-    Identifier identifier;
-    Expression index;
-    Expression expression;
+public class ArrayAssignment extends Statement {
+        Identifier name;
+        Expression index;
+        Expression value;
 
-    public ArrayAssignment(){
-        identifier = null;
-        expression = null;
-        index = null;
-    }
+        public ArrayAssignment() {
+            name = null;
+            index = null;
+            value = null;
+        }
 
-    public void setIdentifier(Identifier identifier){
-        this.identifier = identifier;
-    }
+        public void setName(Identifier name) {
+            this.name = name;
+        }
 
-    public void setExpression(Expression expression){
-        this.expression = expression;
-    }
+        public void setValue(Expression value) {
+            this.value = value;
+        }
 
-    public void setIndexExpression(Expression index){
-        this.index = index;
-    }
+        public void setIndex(Expression index) {
+            this.index = index;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

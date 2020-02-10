@@ -1,15 +1,15 @@
 package ast;
 
-public class IntergerLiteral extends Expression{
-    int val;
+public class IntergerLiteral extends Expression {
+        int value;
 
-    public IntergerLiteral(int tokenline,int tokenchar,int val){
-        super(tokenline,tokenchar);
-        this.val = val;
-    }
+        public IntergerLiteral(int value, int tokenline, int tokenchar) {
+            super(tokenline,tokenchar);
+            this.value = value;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

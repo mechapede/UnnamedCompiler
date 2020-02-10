@@ -1,13 +1,18 @@
 package ast;
 
-public class Type extends TreeNode{
+public class Type extends TreeNode {
 
-    public Type(){
-        super();
-    }
+        public Type() {
+            super();
+        }
 
-    public Type(int tokenline, int tokenchar){
-        super(tokenline,tokenchar);
-    }
+        public Type(int tokenline, int tokenchar) {
+            super(tokenline,tokenchar);
+        }
+
+
+        public boolean equals(Type other) {
+            return this.getClass() == other.getClass();
+        }
 
 }

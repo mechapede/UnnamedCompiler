@@ -1,0 +1,8 @@
+void main() {
+
+}
+
+int foo(int a, int b) {
+    int x;
+    int x;
+}

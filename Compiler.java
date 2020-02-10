@@ -8,6 +8,7 @@ import ast.*;
 public class Compiler {
 	public static void main (String[] args) throws Exception {
 		ANTLRInputStream input;
+        boolean prettyprint = false;
 
 		if (args.length == 0 ) {
 			System.out.println("Usage: Compiler filename.ul");
@@ -16,6 +17,10 @@ public class Compiler {
 		else {
 			input = new ANTLRInputStream(new FileInputStream(args[0]));
 		}
+        
+        if( args.length > 1 && args[1].equals("-p") ){
+            prettyprint = true;
+        }
 
 		ulNoActionsLexer lexer = new ulNoActionsLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -25,7 +30,15 @@ public class Compiler {
 			Program p = parser.program();
             PrintVisitor v = new PrintVisitor();
             p.accept(v);
-            System.out.println(v.getOut());
+            if( prettyprint ){
+                System.out.println(v.getOut());
+            }
+
+            TypeVisitor checker = new TypeVisitor();
+            p.accept(checker);
+            if( checker.errors() ) {
+                System.err.println(checker.dumpErrors());
+            }
 		}
 		catch (RecognitionException e )	{
             System.err.println("Compiler failed. See errors below:");

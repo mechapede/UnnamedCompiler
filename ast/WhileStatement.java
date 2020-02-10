@@ -1,23 +1,23 @@
 package ast;
 
-public class WhileStatement extends Statement{
-    Expression expression;
-    Block block;
+public class WhileStatement extends Statement {
+        Expression cond;
+        Block block;
 
-    public WhileStatement(){
-        expression = null;
-        block = null;
-    }
+        public WhileStatement() {
+            cond = null;
+            block = null;
+        }
 
-    public void setExpression(Expression expression){
-        this.expression = expression;
-    }
+        public void setCond(Expression cond) {
+            this.cond = cond;
+        }
 
-    public void setBlock(Block block){
-        this.block = block;
-    }
+        public void setBlock(Block block) {
+            this.block = block;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 }

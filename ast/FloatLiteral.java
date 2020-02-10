@@ -1,15 +1,15 @@
 package ast;
 
-public class FloatLiteral extends Expression{
-    float val;
+public class FloatLiteral extends Expression {
+        float value;
 
-    public FloatLiteral(int tokenline,int tokenchar,float val){
-        super(tokenline,tokenchar);
-        this.val = val;
-    }
+        public FloatLiteral(float value, int tokenline, int tokenchar) {
+            super(tokenline,tokenchar);
+            this.value = value;
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }

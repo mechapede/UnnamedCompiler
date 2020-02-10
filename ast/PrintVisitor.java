@@ -69,7 +69,7 @@ public class PrintVisitor extends Visitor{
     public Object visit(FormalParameter fp){
         fp.type.accept(this);
         out += " ";
-        fp.identifier.accept(this);
+        fp.name.accept(this);
         return null;
     }
 
@@ -90,7 +90,7 @@ public class PrintVisitor extends Visitor{
     public Object visit(VariableDeclaration vd){
         vd.type.accept(this);
         out += " ";
-        vd.identifier.accept(this);
+        vd.name.accept(this);
         out += ";";
         return null;
     }
@@ -103,7 +103,7 @@ public class PrintVisitor extends Visitor{
 
     public Object visit(IfStatement i){
         out += "if (";
-        i.expression.accept(this);
+        i.cond.accept(this);
         out += ")\n";
         i.block.accept(this);
         if( i.elseblock != null ){
@@ -115,7 +115,7 @@ public class PrintVisitor extends Visitor{
 
     public Object visit(WhileStatement ws){
         out += "while (";
-        ws.expression.accept(this);
+        ws.cond.accept(this);
         out += ")\n";
         ws.block.accept(this);
         return null;
@@ -143,19 +143,19 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(AssignmentStatement as){
-        as.identifier.accept(this);
+        as.name.accept(this);
         out += "=";
-        as.expression.accept(this);
+        as.value.accept(this);
         out += ";";
         return null;
     }
 
     public Object visit(ArrayAssignment as){
-        as.identifier.accept(this);
+        as.name.accept(this);
         out += "[";
         as.index.accept(this);
         out += "]=";
-        as.expression.accept(this);
+        as.value.accept(this);
         out += ";";
         return null;
     }
@@ -240,7 +240,7 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(ArrayValue av){
-        av.identifier.accept(this);
+        av.name.accept(this);
         out += "[";
         av.index.accept(this);
         out += "]";
@@ -248,32 +248,32 @@ public class PrintVisitor extends Visitor{
     }
 
     public Object visit(IdentifierValue iv){
-        iv.identifier.accept(this);
+        iv.name.accept(this);
         return null;
     }
 
     public Object visit(StringLiteral sl){
-        out += sl.val; //TODO: remove quotes from string
+        out += sl.value; //TODO: remove quotes from string
         return null;
     }
 
     public Object visit(IntergerLiteral il){
-        out += il.val+"";
+        out += il.value+"";
         return null;
     }
 
     public Object visit(CharacterLiteral cl){
-        out += "'" + cl.val + "'";
+        out += "'" + cl.value + "'";
         return null;
     }
 
     public Object visit(FloatLiteral fl){
-        out += fl.val+"";
+        out += fl.value+"";
         return null;
     }
 
     public Object visit(BooleanLiteral bl){
-        out += bl.val+"";
+        out += bl.value+"";
         return null;
     }
 

@@ -1,13 +1,13 @@
 package ast;
 
-public class IntergerType extends Type{
+public class IntergerType extends FloatType {
 
-    public IntergerType(int tokenline, int tokenchar){
-        super(tokenline, tokenchar);
-    }
+        public IntergerType(int tokenline, int tokenchar) {
+            super(tokenline, tokenchar);
+        }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
-    }
+        public Object accept(Visitor v) {
+            return v.visit(this);
+        }
 
 }
