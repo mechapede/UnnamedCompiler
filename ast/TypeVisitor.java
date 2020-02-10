@@ -183,7 +183,7 @@ public class TypeVisitor extends Visitor {
                 ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Types of assignment does not match!");
                 violations.add(e);
             }
-            return t;
+            return null;
         }
 
         public Type visit(ArrayAssignment as) {
@@ -193,15 +193,21 @@ public class TypeVisitor extends Visitor {
             if(t == null) {
                 ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Variable is not defined!");
                 violations.add(e);
-            } else if(!t.equals(got)) {
-                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Types of assignment does not match!");
+            } else if( t.getClass() != ArrayType.class ) {
+                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Variable is not a array!");
                 violations.add(e);
+            } else {
+                ArrayType tmp = (ArrayType) t;
+                if(tmp.type.getClass() != got.getClass()) {
+                    ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Types of assignment does not match!");
+                    violations.add(e);
+                }
             }
             if(index.getClass() != IntergerType.class) {
                 ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Types of index is not int!");
                 violations.add(e);
             }
-            return t;
+            return null;
         }
 
         public Type visit(Block b) {
@@ -229,7 +235,7 @@ public class TypeVisitor extends Visitor {
                 ErrorMessage e = new ErrorMessage(ee.tokenline, ee.tokenchar, "Equality cannot be used with void value.");
                 violations.add(e);
             }
-            return t1;
+            return new BooleanType(-1,-1);
         }
 
         public Type visit(LessThanExpression ls) {
@@ -243,7 +249,7 @@ public class TypeVisitor extends Visitor {
                 ErrorMessage e = new ErrorMessage(ls.tokenline, ls.tokenchar, "Less than cannot be used with void value.");
                 violations.add(e);
             }
-            return null;
+            return new BooleanType(-1,-1);
         }
 
         public Type visit(AddExpression ae) {
