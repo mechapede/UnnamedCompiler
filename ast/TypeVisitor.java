@@ -21,7 +21,7 @@ public class TypeVisitor extends Visitor {
                 }
 
                 public String toString() {
-                    return "error " + tokenline + ":" + tokenchar + " " + message;
+                    return tokenline + ":" + tokenchar + " error - "  + message;
                 }
         }
 
@@ -45,19 +45,31 @@ public class TypeVisitor extends Visitor {
 
         public Type visit(Program p) {
             for(int i = 0; i < p.getFunctionCount(); i++) {
-                functions.put(p.getFunction(i).decl.id,p.getFunction(i));
+                Identifier fid = p.getFunction(i).decl.id;
+                Function other = functions.get(fid);
+                if( other != null ){
+                    ErrorMessage e = new ErrorMessage(fid.tokenline, fid.tokenchar, "Function \"" +  fid + 
+                                                      "\" redeclared, originaly declared at " + other.tokenline + ":" + other.tokenchar);
+                    violations.add(e);   
+                }
+                functions.put(fid,p.getFunction(i));
             }
-
-            if(functions.get(new Identifier("main")) == null) {
-                ErrorMessage e = new ErrorMessage(p.tokenline, p.tokenchar, "Missing main function in program.");
+            Function main = functions.get(new Identifier("main"));
+            if(main == null) {
+                ErrorMessage e = new ErrorMessage(p.tokenline, p.tokenchar, "missing main function in program.");
                 violations.add(e);
-            }
+            }else if ( main.decl.type.getClass() != VoidType.class ){
+                ErrorMessage e = new ErrorMessage(main.tokenline, main.tokenchar, "main function return type must be void");
+                violations.add(e);
+            }else if (main.decl.pl != null ){
+                ErrorMessage e = new ErrorMessage(main.tokenline, main.tokenchar, "main function must take no arguements.");
+                violations.add(e);
+            } //TODO: voidtype arrays
 
             for(int i = 0; i < p.getFunctionCount(); i++) {
                 p.getFunction(i).accept(this);
-                variables.clear(); //TODO: use environment
+                variables.clear(); //TODO: use environment type if needed
             }
-
             return null;
         }
 
@@ -84,12 +96,15 @@ public class TypeVisitor extends Visitor {
 
         public Type visit(FormalParameter fp) {
             if(variables.get(fp.name) != null) {
-                ErrorMessage e = new ErrorMessage(fp.tokenline, fp.tokenchar, "Identifier already declared.");
+                ErrorMessage e = new ErrorMessage(fp.tokenline, fp.tokenchar, "formal parameter \"" + fp.name + "\" redefined");
                 violations.add(e);
             } else if(fp.type.getClass() == VoidType.class) {
-                ErrorMessage e = new ErrorMessage(fp.tokenline, fp.tokenchar, "Void type parameters not allowed.");
+                ErrorMessage e = new ErrorMessage(fp.tokenline, fp.tokenchar, "void type used for parameter \"" + fp.name + "\"");
                 violations.add(e);
-            } else {
+            } else if (fp.type.getClass() == ArrayType.class && ((ArrayType) fp.type).type.getClass() == VoidType.class){
+                ErrorMessage e = new ErrorMessage(fp.tokenline, fp.tokenchar, "void type used for parameter array " + "\"" + fp.name + "\"");
+                violations.add(e);
+            }else { //TODO VOIDTYPE ARRAYs
                 variables.put(fp.name,fp.type);
             }
             return null;
@@ -106,11 +121,16 @@ public class TypeVisitor extends Visitor {
         }
 
         public Type visit(VariableDeclaration vd) {
-            if(variables.get(vd.name) != null) {
-                ErrorMessage e = new ErrorMessage(vd.tokenline, vd.tokenchar, "Varriable already declared.");
+            Type other = variables.get(vd.name);
+            if(other != null) {
+                ErrorMessage e = new ErrorMessage(vd.tokenline, vd.tokenchar, "variable \"" + vd.name + "\" redefind, originaly defined at " 
+                                                                              + other.tokenline + ":" + other.tokenchar );
                 violations.add(e);
             } else if(vd.type.getClass() == VoidType.class) {
-                ErrorMessage e = new ErrorMessage(vd.tokenline, vd.tokenchar, "Void type parameters not allowed.");
+                ErrorMessage e = new ErrorMessage(vd.tokenline, vd.tokenchar, "Void type used for variable \"" + vd.name + "\"");
+                violations.add(e);
+            } else if (vd.type.getClass() == ArrayType.class && ((ArrayType) vd.type).type.getClass() == VoidType.class) {
+                ErrorMessage e = new ErrorMessage(vd.tokenline, vd.tokenchar, "void type used for array " + "\"" + vd.name + "\"");
                 violations.add(e);
             } else {
                 variables.put(vd.name,vd.type);
@@ -177,10 +197,11 @@ public class TypeVisitor extends Visitor {
             Type t = variables.get(as.name);
             Type got = (Type) as.value.accept(this);
             if(t == null) {
-                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Variable is not defined!");
+                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "assignment statement to undeclared variable \"" + as.name + "\"");
                 violations.add(e);
             } else if(!t.equals(got)) {
-                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Types of assignment does not match!");
+                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "assignment value of \"" + as.name
+                                                    + "\" does not match expected type expected:" + t + " got: " + got);
                 violations.add(e);
             }
             return null;
@@ -191,7 +212,7 @@ public class TypeVisitor extends Visitor {
             Type got = (Type) as.value.accept(this);
             Type index = (Type) as.index.accept(this);
             if(t == null) {
-                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Variable is not defined!");
+                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar,  "variable \"" + as.name + "\" in array assignment is not declared");
                 violations.add(e);
             } else if( t.getClass() != ArrayType.class ) {
                 ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "Variable is not a array!");

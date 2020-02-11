@@ -23,5 +23,9 @@ public class Identifier extends TreeNode implements Comparable<Identifier> {
         public int compareTo(Identifier other) {
             return this.id.compareTo(other.id);
         }
+        
+        public String toString(){
+            return id;
+        }
 
 }
