@@ -12,4 +12,7 @@ public class FloatLiteral extends Expression {
             return v.visit(this);
         }
 
+        public String toString(){
+            return "float";
+        }
 }

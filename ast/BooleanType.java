@@ -10,4 +10,7 @@ public class BooleanType extends Type {
             return v.visit(this);
         }
 
+        public String toString(){
+            return "boolean";
+        }
 }

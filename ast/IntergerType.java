@@ -9,5 +9,8 @@ public class IntergerType extends FloatType {
         public Object accept(Visitor v) {
             return v.visit(this);
         }
-
+        
+        public String toString(){
+            return "int";
+        }
 }

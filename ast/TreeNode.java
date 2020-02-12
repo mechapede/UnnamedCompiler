@@ -1,6 +1,6 @@
 package ast;
 
-public class TreeNode {
+public abstract class TreeNode {
         int tokenline;
         int tokenchar;
 

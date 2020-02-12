@@ -10,4 +10,7 @@ public class CharType extends Type {
             return v.visit(this);
         }
 
+        public String toString(){
+            return "char";
+        }
 }

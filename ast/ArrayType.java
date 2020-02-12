@@ -37,5 +37,9 @@ public class ArrayType extends Type {
                    this.size == other.size &&
                    this.type.equals(other.type);
         }
+        
+        public String toString(){
+            return this.type.toString() + "[]";
+        }
 
 }

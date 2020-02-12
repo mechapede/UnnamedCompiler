@@ -1,6 +1,6 @@
 package ast;
 
-public class Type extends TreeNode {
+public abstract class Type extends TreeNode {
 
         public Type() {
             super();

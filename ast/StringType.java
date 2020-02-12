@@ -10,4 +10,7 @@ public class StringType extends Type{
          return v.visit(this);
     }
 
+    public String toString(){
+        return "string";
+    }
 }
