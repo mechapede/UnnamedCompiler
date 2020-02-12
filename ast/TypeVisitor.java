@@ -3,6 +3,7 @@ package ast;
 
 import java.util.TreeMap;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class TypeVisitor extends Visitor {
         private TreeMap<Identifier,Function> functions;
@@ -24,8 +25,18 @@ public class TypeVisitor extends Visitor {
                     return tokenline + ":" + tokenchar + " error - "  + message;
                 }
                 
-                public int compareTo(ErrorMessage e){
-                    return 0; //TODO
+                public int compareTo(ErrorMessage other){
+                    if( this.tokenline < other.tokenline ){
+                        return -1;
+                    } if ( this.tokenline > other.tokenline ){
+                        return 1;
+                    } if( this.tokenchar < other.tokenchar ) {
+                        return -1;
+                    } if ( this.tokenchar > other.tokenchar ) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
                 }
         }
 
@@ -41,6 +52,7 @@ public class TypeVisitor extends Visitor {
 
         public String dumpErrors() {
             String buff = "";
+            Collections.sort(violations);
             for(int i = 0; i < violations.size(); i++) {
                 buff += violations.get(i) + "\n";
             }
@@ -85,6 +97,10 @@ public class TypeVisitor extends Visitor {
         }
 
         public Type visit(FunctionDeclaration fd) {
+            if(fd.type.getClass() == ArrayType.class && ((ArrayType) fd.type).type.getClass() == VoidType.class) {
+                ErrorMessage e = new ErrorMessage(fd.tokenline, fd.tokenchar, "void array type used for function " + "\"" + fd.id + "\"");
+                violations.add(e);
+            }
             if(fd.pl != null) {
                 fd.pl.accept(this);
             }
