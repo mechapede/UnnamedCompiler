@@ -207,6 +207,10 @@ public class TypeVisitor extends Visitor {
                 ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "assignment value of \"" + as.name
                                                   + "\" does not match expected type expected:" + t + " got: " + got);
                 violations.add(e);
+            } else if ( t.getClass() == ArrayType.class){
+                ErrorMessage e = new ErrorMessage(as.tokenline, as.tokenchar, "array assignment is not allowed, cannot assign to \"" + as.name
+                                                  + "\"");
+                violations.add(e);
             }
             return null;
         }
