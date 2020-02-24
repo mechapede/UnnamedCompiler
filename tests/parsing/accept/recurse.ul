@@ -4,7 +4,7 @@ int findmax ( int[10] foo, int index ) {
         max = foo[index];
         if ( index < 9 ) {
                 next_max = findmax(foo,index+1);
-                if( max < next_max ) { max = nextmax; }
+                if( max < next_max ) { max = next_max; }
         }
         return max;
 }
