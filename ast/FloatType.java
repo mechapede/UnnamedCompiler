@@ -11,7 +11,7 @@ public class FloatType extends Type {
         }
         
         public String toString(){
-            return "String";
+            return "float";
         }
 
 }
