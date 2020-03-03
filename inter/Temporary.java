@@ -1,27 +1,34 @@
 package inter;
 
+
+
 public class Temporary{
-    enum Type{
+    public enum Type{
+        VOID,
         INT,
         CHAR,
         FLOAT,
         STRING,
+        BOOL,
         ARRAY_INT,
         ARRAY_CHAR,
         ARRAY_FLOAT,
-        ARRAY_STRING
-    }
+        ARRAY_STRING,
+        ARRAY_BOOL
+    };
     
-    enum Use{
+    public enum Use{
         PARAMETER,
         LOCAL
-    }
+    };
     
-    Type t;
-    Use u;
-    public class Temporary(Use u, Type t){
-        this.u = u;
-        this.t = t;
+    public Type type;
+    public Use use;
+    public String name;
+    public Temporary(Use use, Type type, String name){
+        this.use = use;
+        this.type = type;
+        this.name = name;
     }
     
 }

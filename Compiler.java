@@ -37,7 +37,11 @@ public class Compiler {
                     p.accept(checker);
                     if(checker.errors()) {
                         System.err.println(checker.dumpErrors());
+                    } else {
+                        IRVisitor ir = null;
                     }
+                    
+                    
                 }
 
 

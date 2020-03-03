@@ -11,5 +11,5 @@ compiler:
 	javac Compiler.java
 
 clean:
-	rm *.class $(GNAME)*.java $(GNAME).tokens ast/*.class
+	rm *.class $(GNAME)*.java $(GNAME).tokens ast/*.class inter/*.class
 
