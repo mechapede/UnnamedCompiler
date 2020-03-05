@@ -4,6 +4,7 @@
 import org.antlr.runtime.*;
 import java.io.*;
 import ast.*;
+import inter.*;
 
 public class Compiler {
         public static void main(String[] args) throws Exception {
@@ -38,10 +39,11 @@ public class Compiler {
                     if(checker.errors()) {
                         System.err.println(checker.dumpErrors());
                     } else {
-                        IRVisitor ir = null;
+                        IRVisitor ir = new IRVisitor();
+                        p.accept(ir);
+                        IRProgram irp = ir.getIRProgram();
+                        System.out.print(irp + "\nI made it here\n");
                     }
-                    
-                    
                 }
 
 

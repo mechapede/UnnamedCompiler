@@ -1,10 +1,10 @@
 package inter;
 
 public class IRAssignment extends IRStatement{
-    Temporary location;
-    IRConstant c;
-    public IRAssignment(Temporary location, IRConstant c){
-        this.location = location;
-        this.c = c;
+    Temporary dest;
+    Temporary input;
+    public IRAssignment(Temporary dest, Temporary input){
+        this.dest = dest;
+        this.input = input;
     }
 }
