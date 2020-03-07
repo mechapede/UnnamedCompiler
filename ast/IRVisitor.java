@@ -58,8 +58,7 @@ public class IRVisitor extends Visitor {
 
         public Temporary visit(Program p) {
             program = new IRProgram();
-            //create function classes first, so calls can ref
-            for(int i = 0; i < p.getFunctionCount(); i++) {
+            for(int i = 0; i < p.getFunctionCount(); i++) { //func ref first
                 Identifier id = p.getFunction(i).decl.id;
                 IRFunction f = new IRFunction(id.id);
                 functions.put(id,f);
@@ -112,9 +111,15 @@ public class IRVisitor extends Visitor {
         }
 
         public Temporary visit(VariableDeclaration vd) {
-            Temporary v = current.vars.getTemp(convert(vd.type));
+            Temporary v = current.vars.getTemp(convert(vd.type),vd.name.id);
             variables.put(vd.name,v);
-            return null; //TODO: add array creation statementts
+            if( vd.type.getClass() == ArrayType.class ){
+                ArrayType at = (ArrayType) vd.type;
+                IRArrayCreate c = new IRArrayCreate(v,at.size.value);
+                current.addStatement(c);
+            }
+           
+            return null;
         }
 
         public Temporary visit(ExpressionStatement es) {
@@ -125,7 +130,7 @@ public class IRVisitor extends Visitor {
         public Temporary visit(IfStatement i) {
             Temporary c = (Temporary) i.cond.accept(this);
             Temporary negc = current.vars.getTemp(Temporary.Type.BOOL);
-            IRUnaryOp negop = new IRUnaryOp(negc,c,IRUnaryOp.Op.BOOL_NEGATE);
+            IRUnaryOp negop = new IRUnaryOp(negc,c,IRUnaryOp.Op.NEGATE);
             IRLabel elselabel = current.vars.getLabel();
             IRLabel endlabel = current.vars.getLabel();
             IRIfGoto compare = new IRIfGoto(negc,elselabel);
@@ -143,7 +148,7 @@ public class IRVisitor extends Visitor {
         public Temporary visit(WhileStatement ws) {
             Temporary c = (Temporary) ws.cond.accept(this);
             Temporary negc = current.vars.getTemp(Temporary.Type.BOOL);
-            IRUnaryOp negop = new IRUnaryOp(negc,c,IRUnaryOp.Op.BOOL_NEGATE);
+            IRUnaryOp negop = new IRUnaryOp(negc,c,IRUnaryOp.Op.NEGATE);
             IRLabel startlabel = current.vars.getLabel();
             IRLabel endlabel = current.vars.getLabel();
             IRIfGoto compare = new IRIfGoto(negc,endlabel);
@@ -208,17 +213,14 @@ public class IRVisitor extends Visitor {
         }
 
         public Temporary visit(ExpressionList el) {
-            for(int i = 0; i < el.getExpressionCount(); i++) { //TODO: make this work with function calls, must prob use globals
-                el.getExpression(i).accept(this);
-            }
-            return null;
+            return null; //not used
         }
 
         public Temporary visit(EqualityExpression ee) {
             Temporary e1 = (Temporary) ee.e1.accept(this);
             Temporary e2 = (Temporary) ee.e2.accept(this);
             Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
-            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.EQUAL);//TODO: fix operand type
+            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.EQUAL);
             current.addStatement(result);
             return dest;
         }
@@ -227,7 +229,7 @@ public class IRVisitor extends Visitor {
             Temporary e1 = (Temporary) ls.e1.accept(this);
             Temporary e2 = (Temporary) ls.e2.accept(this);
             Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
-            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.LT);//TODO: fix operand type
+            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.LT);
             current.addStatement(result);
             return dest;
         }
@@ -236,7 +238,7 @@ public class IRVisitor extends Visitor {
             Temporary e1 = (Temporary) ae.e1.accept(this);
             Temporary e2 = (Temporary) ae.e2.accept(this);
             Temporary dest = current.vars.getTemp(e1.type);
-            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.ADD);//TODO: fix operand type
+            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.ADD);
             current.addStatement(result);
             return dest;
         }
@@ -245,7 +247,7 @@ public class IRVisitor extends Visitor {
             Temporary e1 = (Temporary) se.e1.accept(this);
             Temporary e2 = (Temporary) se.e2.accept(this);
             Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
-            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.SUB);//TODO: fix operand type
+            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.SUB);
             current.addStatement(result);
             return dest;
         }
@@ -254,21 +256,34 @@ public class IRVisitor extends Visitor {
             Temporary e1 = (Temporary) me.e1.accept(this);
             Temporary e2 = (Temporary) me.e2.accept(this);
             Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
-            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.MUL);//TODO: fix operand type
+            IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.MUL);
             current.addStatement(result);
             return dest;
         }
 
         public Temporary visit(FunctionCall fc) {
-            return null; //TODO: function calls
+            IRFunction f = functions.get(fc.name);
+            Temporary dest = current.vars.getTemp(f.ret);
+            IRCall call = new IRCall(dest,f);
+            for(int i = 0; i < fc.args.getExpressionCount(); i++) { 
+                Temporary t = (Temporary) fc.args.getExpression(i).accept(this);
+                call.args.add(t);
+            }
+            current.addStatement(call);
+            return dest; 
         }
 
         public Temporary visit(ArrayValue av) {
-            return null;
+            Temporary array = variables.get(av.name);
+            Temporary index = (Temporary) av.index.accept(this);
+            Temporary t = current.vars.getTemp(array.type.subType());
+            IRArrayValue aval = new IRArrayValue(array,index,t);
+            current.addStatement(aval);
+            return t;
         }
 
         public Temporary visit(IdentifierValue iv) {
-            return null;
+            return variables.get(iv.name);
         }
 
         public Temporary visit(StringLiteral sl) {

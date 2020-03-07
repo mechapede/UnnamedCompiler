@@ -9,4 +9,8 @@ public class IRArrayAssignment extends IRStatement{
         this.input = input;
         this.index = index;
     }
+    
+    public String toString(){
+        return "  " + dest + "[" + index + "]" +  " := " + input;
+    }
 }

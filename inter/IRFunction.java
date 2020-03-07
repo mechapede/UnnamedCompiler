@@ -22,21 +22,28 @@ public class IRFunction{
         String buff = "";
         buff += "FUNC " + id;
         buff += " (";
-        for(int i =0; i < vars.args.size(); i++){
-            buff += Temporary.TypeConvert(vars.args.get(i).type);
+        int i = 0;
+        while( i < vars.temps.size() ){
+            Temporary t = vars.temps.get(i);
+            if( t.use != Temporary.Use.PARAMETER ) break;
+            buff += t.type;
+            i++;
         }
-        buff += ")" + Temporary.TypeConvert(ret) +"\n";
-        buff += "{";
-        for(int i =0; i < vars.args.size(); i++){
-            buff += Temporary.TypeConvert(vars.args.get(i).type);
+        buff += ")" + ret +"\n";
+        buff += "{\n";
+        while( i < vars.temps.size() ){
+            Temporary t = vars.temps.get(i);
+            if( t.name != null){
+                buff += "  " + "TEMP " + t.index + ":" + t.type + " [" + t.name + "];\n";
+            }else {
+                buff += "  " + "TEMP " + t.index + ":" + t.type + ";\n";
+            }
+            i++;
         }
-        for(int i =0; i < vars.temps.size(); i++){
-            buff += Temporary.TypeConvert(vars.args.get(i).type);
+        for(i =0; i < statements.size(); i++){
+            buff += statements.get(i) + ";\n";
         }
-        for(int i =0; i < statements.size(); i++){
-            buff += statements.get(i) + "\n";
-        }
-        buff += "}";
+        buff += "}\n";
         return buff;
     }
 }

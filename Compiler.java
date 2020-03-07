@@ -42,20 +42,18 @@ public class Compiler {
                         IRVisitor ir = new IRVisitor();
                         p.accept(ir);
                         IRProgram irp = ir.getIRProgram();
-                        System.out.print(irp + "\nI made it here\n");
+                        System.out.print(irp);
                     }
                 }
 
 
-            }
-            catch(RecognitionException e)	{
+            }catch(RecognitionException e)	{
                 System.err.println("Compiler failed. See errors below:");
                 // A lexical or parsing error occured.
                 // ANTLR will have already printed information on the
                 // console due to code added to the grammar.  So there is
                 // nothing to do here.
-            }
-            catch(Exception e) {
+            }catch(Exception e) {
                 System.err.println("Compiler failed. See errors below:");
                 System.err.println(e);
                 e.printStackTrace();

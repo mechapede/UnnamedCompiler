@@ -7,4 +7,8 @@ public class IRAssignment extends IRStatement{
         this.dest = dest;
         this.input = input;
     }
+    
+    public String toString(){
+        return "  " +  dest +  " := " + input;
+    }
 }

@@ -8,4 +8,8 @@ public class IRIfGoto extends IRStatement{
             this.cond = cond;
             this.label = label;
         }
+        
+        public String toString(){
+            return "  IF " + cond + " GOTO " + label;
+        }
 }

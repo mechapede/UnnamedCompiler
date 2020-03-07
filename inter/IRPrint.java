@@ -6,4 +6,8 @@ public class IRPrint extends IRStatement {
     public IRPrint(Temporary contents){
         this.contents = contents;
     }
+    
+    public String toString(){
+        return "  PRINT" + contents.type + " " + contents;
+    }
 }

@@ -8,4 +8,8 @@ public class IRConstantAssignment extends IRStatement {
             this.dest = dest;
             this.val = val;
         }
+        
+        public String toString(){
+            return "  " +  dest + " := " + val;
+        }
 }

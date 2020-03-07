@@ -2,14 +2,22 @@
 GNAME= ulNoActions
 GSRC= $(GNAME).g
 
-all: grammar compiler
+all: ast inter grammar compiler
 
-grammar:
+grammar: $(GSRC)
 	java org.antlr.Tool -fo . $(GSRC)
 
 .PHONY: compiler
 compiler:
 	javac Compiler.java
+
+.PHONY: ast
+ast: 
+	javac ast/*.java
+
+.PHONY: inter
+inter:
+	javac inter/*.java
 
 .PHONY: clean
 clean:

@@ -2,11 +2,31 @@ package inter;
 
 public class IRBinaryOp extends IRStatement {
         public enum Op {
-            ADD, //gets type op from input1
-            SUB,
-            MUL,
-            EQUAL,
-            LT
+            ADD {
+                public String toString() {
+                    return "+";
+                }
+            },
+            SUB {
+                public String toString() {
+                    return "-";
+                }
+            },
+            MUL {
+                public String toString() {
+                    return "*";
+                }
+            },
+            EQUAL {
+                public String toString() {
+                    return "==";
+                }
+            },
+            LT {
+                public String toString() {
+                    return "<";
+                }
+            }
         }
 
         Temporary result;
@@ -20,5 +40,8 @@ public class IRBinaryOp extends IRStatement {
             this.input2 = input2;
             this.operation = operation;
         }
-
+        
+        public String toString(){
+            return "  " + result + " := " + input1 + " " + operation + " " + input2;
+        }
 }

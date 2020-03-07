@@ -5,4 +5,8 @@ public class IRLabel extends IRStatement{
         public IRLabel(String name) {
             this.name = name;
         }
+        
+        public String toString(){
+            return name + ":";
+        }
 }

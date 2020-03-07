@@ -2,59 +2,101 @@ package inter;
 
 public class Temporary {
         public enum Type {
-            VOID,
-            INT,
-            CHAR,
-            FLOAT,
-            STRING,
-            BOOL,
-            ARRAY_INT,
-            ARRAY_CHAR,
-            ARRAY_FLOAT,
-            ARRAY_STRING,
-            ARRAY_BOOL
-        };
-        
-        public static String TypeConvert(Type t){ //TODO: combine into toString of enum
-            switch(t){
-                case VOID:
+            VOID(null) {
+                public String toString() {
                     return "V";
-                case INT:
+                }
+            },
+            INT(null) {
+                public String toString() {
                     return "I";
-                case CHAR:
+                }
+            },
+            CHAR(null) {
+                public String toString() {
                     return "C";
-                case FLOAT:
+                }
+            },
+            FLOAT(null) {
+                public String toString() {
                     return "F";
-                case STRING:
+                }
+            },
+            STRING(null) {
+                public String toString() {
                     return "U";
-                case BOOL:
+                }
+            },
+            BOOL(null) {
+                public String toString() {
                     return "Z";
-                case ARRAY_INT:
+                }
+            },
+            ARRAY_INT(INT) {
+                public String toString() {
                     return "AI";
-                case ARRAY_CHAR:
+                }
+            },
+            ARRAY_CHAR(CHAR) {
+                public String toString() {
                     return "AC";
-                case ARRAY_FLOAT:
+                }
+            },
+            ARRAY_FLOAT(FLOAT) {
+                public String toString() {
                     return "AF";
-                case ARRAY_STRING:
+                }
+            },
+            ARRAY_STRING(STRING) {
+                public String toString() {
                     return "AU";
-                case ARRAY_BOOL:
+                }
+            },
+            ARRAY_BOOL(BOOL) {
+                public String toString() {
                     return "AZ";
+                }
+            };
+            private Type subtype;
+            Type(Type subtype){
+                this.subtype = subtype;
             }
-            return null;
-        }
+            
+            public Type subType(){
+                return subtype;
+            }
+        };
 
         public enum Use {
             PARAMETER,
             LOCAL
         };
 
+        public int index; //# of parameter
         public Type type;
         public Use use;
         public String name;
-        public Temporary(Use use, Type type, String name) {
+
+        public Temporary(int index, Use use, Type type) {
+            this.index = index;
+            this.use = use;
+            this.type = type;
+            this.name = null;
+        }
+
+        public Temporary(int index, Use use, Type type, String name) {
+            this.index = index;
             this.use = use;
             this.type = type;
             this.name = name;
+        }
+
+        public String toString() {
+            return "T" + index;
+        }
+
+        public String getName() {
+            return (name != null) ? ("[" + name +  "]") : "";
         }
 
 }
