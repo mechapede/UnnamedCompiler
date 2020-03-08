@@ -1,16 +1,16 @@
 package ast;
 
-public class StringType extends Type{
+public class StringType extends Type {
 
-    public StringType(int tokenline, int tokenchar){
+    public StringType(int tokenline, int tokenchar) {
         super(tokenline, tokenchar);
     }
 
-    public Object accept(Visitor v){
-         return v.visit(this);
+    public Object accept(Visitor v) {
+        return v.visit(this);
     }
 
-    public String toString(){
+    public String toString() {
         return "string";
     }
 }

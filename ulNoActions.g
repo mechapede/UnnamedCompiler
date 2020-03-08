@@ -45,8 +45,8 @@ function returns [Function f]
     f = new Function();
 }
     :
-    d=functionDecl{f.setDeclaration(d);f.setTokenLine(d.getTokenLine());f.setTokenChar(d.getTokenChar());}
-    b=functionBody{f.setBody(b);}
+    d=functionDecl{f.decl = d;f.setTokenLine(d.getTokenLine());f.setTokenChar(d.getTokenChar());}
+    b=functionBody{f.body = b;}
 	;
 
 functionDecl returns [FunctionDeclaration fd]
@@ -55,9 +55,9 @@ functionDecl returns [FunctionDeclaration fd]
     fd = new FunctionDeclaration();
 }
     :
-    t=compoundType{fd.setType(t);fd.setTokenLine(t.getTokenLine());fd.setTokenChar(t.getTokenChar());}
-    i=identifier{fd.setIdentifier(i);}
-    '(' (p=formalParameters{fd.setParameters(p);})? ')'
+    t=compoundType{fd.type = t;fd.setTokenLine(t.getTokenLine());fd.setTokenChar(t.getTokenChar());}
+    i=identifier{fd.id = i;}
+    '(' (p=formalParameters{fd.pl = p;})? ')'
 	;
 
 formalParameters returns [FormalParameterList pl]
@@ -81,8 +81,8 @@ formalParameter returns [FormalParameter fp]
     fp = new FormalParameter();
 }
     :
-    c=compoundType{fp.setType(c); fp.setTokenLine(c.getTokenLine()); fp.setTokenChar(c.getTokenChar());}
-    i=identifier{fp.setName(i);}
+    c=compoundType{fp.type = c; fp.setTokenLine(c.getTokenLine()); fp.setTokenChar(c.getTokenChar());}
+    i=identifier{fp.id = i;}
     ;
 
 functionBody returns [FunctionBody fb]
@@ -102,8 +102,8 @@ vardecl returns [VariableDeclaration va]
     	va = new VariableDeclaration();
 }
     :
-    t=compoundType{va.setType(t);va.setTokenLine(t.getTokenLine()); va.setTokenChar(t.getTokenChar());}
-    i=identifier{va.setName(i);} ';'
+    t=compoundType{va.type = t;va.setTokenLine(t.getTokenLine()); va.setTokenChar(t.getTokenChar());}
+    i=identifier{va.id = i;} ';'
     ;
 
 compoundType returns [Type t]
@@ -156,9 +156,9 @@ ifstatement returns [Statement s]
     s = f;
 }
     :
-    j=IF{f.setTokenLine(j.getLine());f.setTokenChar(j.getCharPositionInLine());} '(' e=expr{f.setCond(e);} ')'
-    b=block{f.setBlock(b);}
-    (ELSE be=block{f.setElseBlock(be);})?
+    j=IF{f.setTokenLine(j.getLine());f.setTokenChar(j.getCharPositionInLine());} '(' e=expr{f.cond = e;} ')'
+    b=block{f.block = b;}
+    (ELSE be=block{f.elseblock = be;})?
     ;
 
 whilestatement returns [Statement s]
@@ -173,7 +173,7 @@ whilestatement returns [Statement s]
 }
     :
     j=WHILE{w.setTokenLine(j.getLine());w.setTokenChar(j.getCharPositionInLine());}
-    '(' e=expr{w.setCond(e);} ')' b=block{w.setBlock(b);}
+    '(' e=expr{w.cond = e;} ')' b=block{w.block = b;}
     ;
 
 printstatement returns [Statement s]
@@ -187,8 +187,19 @@ printlnstatement returns [Statement s]
     ;
 
 returnstatement returns [Statement s]
+@init
+{
+    s = null;
+    ReturnStatement r = new ReturnStatement();
+}
+@after
+{
+    s = r;
+}
     :
-    j=RETURN e=expr{s = new ReturnStatement(e,j.getLine(),j.getCharPositionInLine());} ';'
+    j=RETURN{r.setTokenLine(j.getLine()); r.setTokenChar(j.getCharPositionInLine());} 
+    (e=expr{r.expression = e;})? 
+    ';'
     ;
 
 assignmentstatement returns [Statement s]
@@ -202,8 +213,8 @@ assignmentstatement returns [Statement s]
     s = as;
 }
     :
-    i=identifier{as.setName(i);as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
-    '=' e=expr{as.setValue(e);} ';'
+    i=identifier{as.id = i;as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
+    '=' e=expr{as.value = e;} ';'
     ;
 
 arrayassignment returns [Statement s]
@@ -217,8 +228,8 @@ arrayassignment returns [Statement s]
     s = as;
 }
     :
-    ( (i=identifier{as.setName(i); as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
-    '[' index=expr{as.setIndex(index);} ']' '=' v=expr{as.setValue(v);})) ';'
+    ( (i=identifier{as.id = i; as.setTokenLine(i.getTokenLine()); as.setTokenChar(i.getTokenChar());}
+    '[' index=expr{as.index = index;} ']' '=' v=expr{as.value = v;})) ';'
     ;
 
 exprstatement returns [Statement s]

@@ -10,6 +10,6 @@ public class IRIfGoto extends IRStatement{
         }
         
         public String toString(){
-            return "  IF " + cond + " GOTO " + label;
+            return "  IF " + cond + " GOTO " + label.name;
         }
 }

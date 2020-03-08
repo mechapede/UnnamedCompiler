@@ -1,13 +1,13 @@
 package inter;
 
 public class IRGoto extends IRStatement {
-        IRLabel label;
+        public IRLabel label;
 
         public IRGoto(IRLabel label) {
             this.label = label;
         }
         
         public String toString(){
-            return "  GOTO " + label;
+            return "  GOTO " + label.name;
         }
 }

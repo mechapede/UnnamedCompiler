@@ -1,9 +1,10 @@
 package inter;
 
 public class IRArrayValue extends IRStatement{
-    Temporary array;
-    Temporary index;
-    Temporary dest;
+    public Temporary array;
+    public Temporary index;
+    public Temporary dest;
+    
     public IRArrayValue(Temporary array, Temporary index, Temporary dest){
         this.array = array;
         this.index = index;

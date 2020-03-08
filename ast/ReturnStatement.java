@@ -1,15 +1,20 @@
 package ast;
 
 public class ReturnStatement extends Statement {
-        Expression expression;
+    public Expression expression;
 
-        public ReturnStatement(Expression expression, int tokenline, int tokenchar) {
-            super(tokenline,tokenchar);
-            this.expression = expression;
-        }
+    public ReturnStatement() {
+        super();
+        this.expression = null;
+    }
 
-        public Object accept(Visitor v) {
-            return v.visit(this);
-        }
+    public ReturnStatement(Expression expression, int tokenline, int tokenchar) {
+        super(tokenline,tokenchar);
+        this.expression = expression;
+    }
+
+    public Object accept(Visitor v) {
+        return v.visit(this);
+    }
 
 }

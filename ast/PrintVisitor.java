@@ -1,39 +1,39 @@
 /* Returns a string representation of the parse tree */
 package ast;
 
-public class PrintVisitor extends Visitor{
+public class PrintVisitor extends Visitor {
     int indent;
     String out;
 
-    public PrintVisitor(){
+    public PrintVisitor() {
         indent = 0;
         out = "";
     }
 
-    public String getOut(){
+    public String getOut() {
         return out;
     }
 
-    private String getIndent(){
+    private String getIndent() {
         String spacing = "";
-        for(int i = 0; i < indent; i++){
+        for(int i = 0; i < indent; i++) {
             spacing += "    ";
         }
         return spacing;
     }
 
-    public Object visit(Program p){
-        if( p.getFunctionCount() > 0 ){
+    public Object visit(Program p) {
+        if(p.getFunctionCount() > 0) {
             p.getFunction(0).accept(this);
         }
-        for(int i = 1; i < p.getFunctionCount(); i++){
+        for(int i = 1; i < p.getFunctionCount(); i++) {
             out += "\n";
             p.getFunction(i).accept(this);
         }
         return null;
     }
 
-    public Object visit(Function p){
+    public Object visit(Function p) {
         p.decl.accept(this);
         indent += 1;
         out += "\n{\n";
@@ -43,43 +43,43 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(FunctionDeclaration fd){
+    public Object visit(FunctionDeclaration fd) {
         fd.type.accept(this);
         out += " ";
         fd.id.accept(this);
         out += " (";
-        if( fd.pl != null){ //for no arg case
+        if(fd.pl != null) { //for no arg case
             fd.pl.accept(this);
         }
         out += ")";
         return null;
     }
 
-    public Object visit(FormalParameterList fpl){
-        if(fpl.getParameterCount() > 0){
+    public Object visit(FormalParameterList fpl) {
+        if(fpl.getParameterCount() > 0) {
             fpl.getParameter(0).accept(this);
         }
-        for(int i = 1; i < fpl.getParameterCount(); i++){
+        for(int i = 1; i < fpl.getParameterCount(); i++) {
             out += ", ";
             fpl.getParameter(i).accept(this);
         }
         return null;
     }
 
-    public Object visit(FormalParameter fp){
+    public Object visit(FormalParameter fp) {
         fp.type.accept(this);
         out += " ";
-        fp.name.accept(this);
+        fp.id.accept(this);
         return null;
     }
 
-    public Object visit(FunctionBody fb){
-        for(int i = 0; i < fb.getDeclarationCount(); i++){
+    public Object visit(FunctionBody fb) {
+        for(int i = 0; i < fb.getDeclarationCount(); i++) {
             out += getIndent();
             fb.getDeclaration(i).accept(this);
             out += "\n";
         }
-        for(int i = 0; i < fb.getStatementCount(); i++){
+        for(int i = 0; i < fb.getStatementCount(); i++) {
             out += getIndent();
             fb.getStatement(i).accept(this);
             out += "\n";
@@ -87,33 +87,33 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(VariableDeclaration vd){
+    public Object visit(VariableDeclaration vd) {
         vd.type.accept(this);
         out += " ";
-        vd.name.accept(this);
+        vd.id.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(ExpressionStatement es){
+    public Object visit(ExpressionStatement es) {
         es.expression.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(IfStatement i){
+    public Object visit(IfStatement i) {
         out += "if (";
         i.cond.accept(this);
         out += ")\n";
         i.block.accept(this);
-        if( i.elseblock != null ){
+        if(i.elseblock != null) {
             out += getIndent() + "\n" + getIndent() + "else\n";
             i.elseblock.accept(this);
         }
         return null;
     }
 
-    public Object visit(WhileStatement ws){
+    public Object visit(WhileStatement ws) {
         out += "while (";
         ws.cond.accept(this);
         out += ")\n";
@@ -121,37 +121,37 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(PrintStatement ps){
+    public Object visit(PrintStatement ps) {
         out += "print ";
         ps.expression.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(PrintLnStatement ps){
+    public Object visit(PrintLnStatement ps) {
         out += "println ";
         ps.expression.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(ReturnStatement r){
+    public Object visit(ReturnStatement r) {
         out += "return ";
-        r.expression.accept(this);
+        if(r.expression != null) r.expression.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(AssignmentStatement as){
-        as.name.accept(this);
+    public Object visit(AssignmentStatement as) {
+        as.id.accept(this);
         out += "=";
         as.value.accept(this);
         out += ";";
         return null;
     }
 
-    public Object visit(ArrayAssignment as){
-        as.name.accept(this);
+    public Object visit(ArrayAssignment as) {
+        as.id.accept(this);
         out += "[";
         as.index.accept(this);
         out += "]=";
@@ -160,10 +160,10 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(Block b){
+    public Object visit(Block b) {
         out += getIndent() + "{\n";
         indent += 1;
-        for(int i = 0; i < b.getStatementCount(); i++){
+        for(int i = 0; i < b.getStatementCount(); i++) {
             out += getIndent();
             b.getStatement(i).accept(this);
             out += "\n";
@@ -173,18 +173,18 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(ExpressionList el){
-        if( el.getExpressionCount() > 0){
+    public Object visit(ExpressionList el) {
+        if(el.getExpressionCount() > 0) {
             el.getExpression(0).accept(this);
         }
-        for(int i = 1; i < el.getExpressionCount(); i++){
+        for(int i = 1; i < el.getExpressionCount(); i++) {
             out += ", ";
             el.getExpression(i).accept(this);
         }
         return null;
     }
 
-    public Object visit(EqualityExpression ee){
+    public Object visit(EqualityExpression ee) {
         out += "(";
         ee.e1.accept(this);
         out += "==";
@@ -193,7 +193,7 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(LessThanExpression ls){
+    public Object visit(LessThanExpression ls) {
         out += "(";
         ls.e1.accept(this);
         out += "<";
@@ -202,7 +202,7 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(AddExpression ae){
+    public Object visit(AddExpression ae) {
         out += "(";
         ae.e1.accept(this);
         out += "+";
@@ -211,7 +211,7 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(SubtractExpression se){
+    public Object visit(SubtractExpression se) {
         out += "(";
         se.e1.accept(this);
         out += "-";
@@ -220,7 +220,7 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(MultiExpression me){
+    public Object visit(MultiExpression me) {
         out += "(";
         me.e1.accept(this);
         out += "*";
@@ -229,17 +229,17 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(FunctionCall fc){
+    public Object visit(FunctionCall fc) {
         fc.name.accept(this);
         out += "(";
-        if(fc.args != null){
+        if(fc.args != null) {
             fc.args.accept(this);
         }
         out += ")";
         return null;
     }
 
-    public Object visit(ArrayValue av){
+    public Object visit(ArrayValue av) {
         av.name.accept(this);
         out += "[";
         av.index.accept(this);
@@ -247,37 +247,37 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(IdentifierValue iv){
-        iv.name.accept(this);
+    public Object visit(IdentifierValue iv) {
+        iv.id.accept(this);
         return null;
     }
 
-    public Object visit(StringLiteral sl){
+    public Object visit(StringLiteral sl) {
         out += sl.value; //TODO: remove quotes from string
         return null;
     }
 
-    public Object visit(IntergerLiteral il){
+    public Object visit(IntergerLiteral il) {
         out += il.value+"";
         return null;
     }
 
-    public Object visit(CharacterLiteral cl){
+    public Object visit(CharacterLiteral cl) {
         out += "'" + cl.value + "'";
         return null;
     }
 
-    public Object visit(FloatLiteral fl){
+    public Object visit(FloatLiteral fl) {
         out += fl.value+"";
         return null;
     }
 
-    public Object visit(BooleanLiteral bl){
+    public Object visit(BooleanLiteral bl) {
         out += bl.value+"";
         return null;
     }
 
-    public Object visit(ArrayType at){
+    public Object visit(ArrayType at) {
         at.type.accept(this);
         out += "[";
         at.size.accept(this);
@@ -285,37 +285,37 @@ public class PrintVisitor extends Visitor{
         return null;
     }
 
-    public Object visit(IntergerType it){
+    public Object visit(IntergerType it) {
         out += "int";
         return null;
     }
 
-    public Object visit(FloatType ft){
+    public Object visit(FloatType ft) {
         out += "float";
         return null;
     }
 
-    public Object visit(CharType ct){
+    public Object visit(CharType ct) {
         out += "char";
         return null;
     }
 
-    public Object visit(StringType st){
+    public Object visit(StringType st) {
         out += "string";
         return null;
     }
 
-    public Object visit(BooleanType bt){
+    public Object visit(BooleanType bt) {
         out += "boolean";
         return null;
     }
 
-    public Object visit(VoidType vt){
+    public Object visit(VoidType vt) {
         out += "void";
         return null;
     }
 
-    public Object visit(Identifier i){
+    public Object visit(Identifier i) {
         out += i.id;
         return null;
     }

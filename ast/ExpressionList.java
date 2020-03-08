@@ -3,7 +3,7 @@ package ast;
 import java.util.ArrayList;
 
 public class ExpressionList {
-        ArrayList<Expression> expressions;
+        private ArrayList<Expression> expressions;
 
         public ExpressionList() {
             expressions = new ArrayList<Expression>();

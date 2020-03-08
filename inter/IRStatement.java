@@ -1,6 +1,6 @@
 package inter;
 
-public abstract class IRStatement{
-    
-    
+public abstract class IRStatement {
+
+
 }
