@@ -253,7 +253,7 @@ public class PrintVisitor extends Visitor {
     }
 
     public Object visit(StringLiteral sl) {
-        out += sl.value; //TODO: remove quotes from string
+        out += "\"" + sl.value + "\"";
         return null;
     }
 

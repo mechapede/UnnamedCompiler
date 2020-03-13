@@ -76,6 +76,10 @@ public class IRVisitor extends Visitor {
         current = functions.get(f.decl.id);
         f.decl.accept(this);
         f.body.accept(this);
+        if(current.getStatement(current.getStatementCount()-1).getClass() != IRReturn.class ) { //should only happen for void functions
+            IRReturn rs = new IRReturn(null);
+            current.addStatement(rs);
+        }
         return null;
     }
 
@@ -123,7 +127,7 @@ public class IRVisitor extends Visitor {
     }
 
     public Temporary visit(ExpressionStatement es) {
-        es.accept(this);
+        es.expression.accept(this);
         return null;
     }
 
@@ -146,14 +150,14 @@ public class IRVisitor extends Visitor {
     }
 
     public Temporary visit(WhileStatement ws) {
+        IRLabel startlabel = current.vars.getLabel();
+        IRLabel endlabel = current.vars.getLabel();
+        IRGoto checktrue = new IRGoto(startlabel);
+        current.addStatement(startlabel);
         Temporary c = (Temporary) ws.cond.accept(this);
         Temporary negc = current.vars.getTemp(Temporary.Type.BOOL);
         IRUnaryOp negop = new IRUnaryOp(negc,c,IRUnaryOp.Op.NEGATE);
-        IRLabel startlabel = current.vars.getLabel();
-        IRLabel endlabel = current.vars.getLabel();
         IRIfGoto compare = new IRIfGoto(negc,endlabel);
-        IRGoto checktrue = new IRGoto(endlabel);
-        current.addStatement(startlabel);
         current.addStatement(negop);
         current.addStatement(compare);
         ws.block.accept(this);
@@ -246,7 +250,7 @@ public class IRVisitor extends Visitor {
     public Temporary visit(SubtractExpression se) {
         Temporary e1 = (Temporary) se.e1.accept(this);
         Temporary e2 = (Temporary) se.e2.accept(this);
-        Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
+        Temporary dest = current.vars.getTemp(e1.type);
         IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.SUB);
         current.addStatement(result);
         return dest;
@@ -255,7 +259,7 @@ public class IRVisitor extends Visitor {
     public Temporary visit(MultiExpression me) {
         Temporary e1 = (Temporary) me.e1.accept(this);
         Temporary e2 = (Temporary) me.e2.accept(this);
-        Temporary dest = current.vars.getTemp(Temporary.Type.BOOL);
+        Temporary dest = current.vars.getTemp(e1.type);
         IRBinaryOp result = new IRBinaryOp(dest,e1,e2,IRBinaryOp.Op.MUL);
         current.addStatement(result);
         return dest;
@@ -263,7 +267,8 @@ public class IRVisitor extends Visitor {
 
     public Temporary visit(FunctionCall fc) {
         IRFunction f = functions.get(fc.name);
-        Temporary dest = current.vars.getTemp(f.ret);
+        Temporary dest = null;
+        if(f.ret != Temporary.Type.VOID) dest = current.vars.getTemp(f.ret);
         IRCall call = new IRCall(dest,f);
         for(int i = 0; i < fc.args.getExpressionCount(); i++) {
             Temporary t = (Temporary) fc.args.getExpression(i).accept(this);

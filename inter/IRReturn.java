@@ -8,6 +8,6 @@ public class IRReturn extends IRStatement {
     }
 
     public String toString() {
-        return (value != null) ? ("  RETURN " + value)  : ("  return");
+        return (value != null) ? ("  RETURN " + value)  : ("  RETURN");
     }
 }

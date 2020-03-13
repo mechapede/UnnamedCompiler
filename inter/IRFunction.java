@@ -17,6 +17,14 @@ public class IRFunction {
     public void addStatement(IRStatement s) {
         statements.add(s);
     }
+    
+    public int getStatementCount(){
+        return statements.size();
+    }
+    
+    public IRStatement getStatement(int index){
+        return statements.get(index);
+    }
 
     public String toString() {
         String buff = "";

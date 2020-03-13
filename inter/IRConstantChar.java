@@ -7,6 +7,6 @@ public class IRConstantChar extends IRConstant {
     }
 
     public String toString() {
-        return "" + value;
+        return "'" + value + "'";
     }
 }

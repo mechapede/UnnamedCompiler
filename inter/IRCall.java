@@ -19,7 +19,8 @@ public class IRCall extends IRStatement {
 
     public String toString() {
         String buff = "  ";
-        if(dest != null) buff += dest + " := CALL ";
+        if(dest != null) buff += dest + " := ";
+        buff += "CALL ";
         buff += function.id + "(";
         if(args.size() > 0) buff += args.get(0);
         for(int i=1; i < args.size(); i++) {

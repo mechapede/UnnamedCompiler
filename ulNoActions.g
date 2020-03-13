@@ -300,7 +300,7 @@ getexpr returns [Expression e]
 
 literalexpr returns [Expression e]
     :
-    (n=STRINGCONSTANT{e = new StringLiteral(n.getText(),n.getLine(),n.getCharPositionInLine());})|
+    (n=STRINGCONSTANT{e = new StringLiteral(n.getText().substring(1,n.getText().length()-1),n.getLine(),n.getCharPositionInLine());})|
     (n=INTERGERCONSTANT{e = new IntergerLiteral(Integer.parseInt(n.getText()),n.getLine(),n.getCharPositionInLine());})|
     (n=CHARACTERCONSTANT{e = new CharacterLiteral(n.getText().charAt(1),n.getLine(),n.getCharPositionInLine());})|
     (n=FLOATCONSTANT{e = new FloatLiteral(Float.parseFloat(n.getText()),n.getLine(),n.getCharPositionInLine());})|
