@@ -41,21 +41,21 @@ public class Compiler {
             p.accept(v);
             if(prettyprint) {
                 System.out.println(v.getOut());
-            } else {
-                TypeVisitor checker = new TypeVisitor();
-                p.accept(checker);
-                if(checker.errors()) {
-                    System.err.println(checker.dumpErrors());
-                } else {
-                    IRVisitor ir = new IRVisitor();
-                    p.accept(ir);
-                    IRProgram irp = ir.getIRProgram();
-                    irp.setName(match.group(1));
-                    
-                    System.out.print(irp); //TODO: make IRProgram print name
-                }
+                return;
             }
-
+            
+            TypeVisitor checker = new TypeVisitor();
+            p.accept(checker);
+            if(checker.errors()) {
+                System.err.println(checker.dumpErrors());
+                return;
+            }
+            
+            IRVisitor ir = new IRVisitor();
+            p.accept(ir);
+            IRProgram irp = ir.getIRProgram();
+            irp.setName(match.group(1));
+            System.out.print(irp); 
 
         } catch(RecognitionException e)	{
             System.err.println("Compiler failed. See errors below:");
