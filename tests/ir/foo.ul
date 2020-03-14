@@ -1,0 +1,21 @@
+int foo (int x, int y)
+{
+	float z;
+	string p;
+	char c;
+	int[3] w;
+
+	c = 'A';
+	x = 7;
+	p = "Hi there";
+	z = 3.732;
+	y = x;
+
+	return 8;
+}
+
+void main()
+{
+	foo(2,2);
+}
+

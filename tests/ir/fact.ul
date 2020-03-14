@@ -1,0 +1,21 @@
+int factorial(int n)
+{
+	int returnValue;
+
+	if (n == 1)
+	{
+		returnValue = 1;
+	}
+	else
+	{
+		returnValue =  n*factorial(n-1);
+	}
+	return returnValue;
+}
+
+void main()
+{
+	print "The factorial of 8 is ";
+	println factorial(8);
+}
+

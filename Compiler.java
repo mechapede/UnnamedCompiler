@@ -6,19 +6,27 @@ import java.io.*;
 import ast.*;
 import inter.*;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Compiler {
     public static void main(String[] args) throws Exception {
-        ANTLRInputStream input;
-        boolean prettyprint = false;
-
         if(args.length == 0) {
             System.out.println("Usage: Compiler filename.ul");
             return;
         }
-        else {
-            input = new ANTLRInputStream(new FileInputStream(args[0]));
-        }
-
+        
+        Pattern name_regex = Pattern.compile("^(?:[^/]*/+)*([^/.]+)\\.ul$");
+        Matcher match = name_regex.matcher(args[0]);
+        boolean found = match.find();
+        if( !found ){
+            System.out.println("filename must end with .ul");
+        } 
+        
+        ANTLRInputStream input;
+        input = new ANTLRInputStream(new FileInputStream(args[0]));
+        
+        boolean prettyprint = false;
         if(args.length > 1 && args[1].equals("-p")) {
             prettyprint = true;
         }
@@ -42,7 +50,8 @@ public class Compiler {
                     IRVisitor ir = new IRVisitor();
                     p.accept(ir);
                     IRProgram irp = ir.getIRProgram();
-                    System.out.println("PROG test");
+                    irp.setName(match.group(1));
+                    
                     System.out.print(irp); //TODO: make IRProgram print name
                 }
             }

@@ -1,0 +1,13 @@
+void less (int x, int y)
+{
+	if (x < y)
+	{
+		print x;
+	}
+	print y;
+}
+
+void main()
+{
+	less(2,3);
+}
