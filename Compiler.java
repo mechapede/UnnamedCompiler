@@ -16,7 +16,7 @@ public class Compiler {
             return;
         }
         
-        Pattern name_regex = Pattern.compile("^(?:[^/]*/+)*([^/.]+)\\.ul$");
+        Pattern name_regex = Pattern.compile("^(?:[^/]*/+)*([^/]+?)\\.ul$");
         Matcher match = name_regex.matcher(args[0]);
         boolean found = match.find();
         if( !found ){
@@ -27,8 +27,11 @@ public class Compiler {
         input = new ANTLRInputStream(new FileInputStream(args[0]));
         
         boolean prettyprint = false;
+        boolean typeonly = false;
         if(args.length > 1 && args[1].equals("-p")) {
             prettyprint = true;
+        }else if(args.length > 1 && args[1].equals("-t")) {
+            typeonly = true;
         }
 
         ulNoActionsLexer lexer = new ulNoActionsLexer(input);
@@ -48,6 +51,9 @@ public class Compiler {
             p.accept(checker);
             if(checker.errors()) {
                 System.err.println(checker.dumpErrors());
+                return;
+            }
+            if(typeonly){
                 return;
             }
             

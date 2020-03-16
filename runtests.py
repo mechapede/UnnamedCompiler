@@ -53,7 +53,7 @@ def typecheck_tests():
     total_tests = len(accept_tests) + len(reject_tests)
     passed_tests = 0
     for test in accept_tests:
-        result = subprocess.run(["java","Compiler", test_path + "accept/" + test],capture_output=True,check=True)
+        result = subprocess.run(["java","Compiler", test_path + "accept/" + test,"-t"],capture_output=True,check=True)
         if(result.stderr == b"" and result.stdout == b""):
             print("Passed accept test " + test)
             passed_tests += 1
@@ -62,7 +62,7 @@ def typecheck_tests():
             print(result)
     
     for test in reject_tests:
-        result = subprocess.run(["java","Compiler", test_path + "reject/" + test],capture_output=True,check=True)
+        result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=True)
         if(result.stderr == b"" and result.stdout == b""):
             print("Failed test " + test +  ", expected reject. Dumping process object:")
             print(result)
@@ -81,7 +81,7 @@ def typecheck_array_tests():
     total_tests = len(accept_tests) + len(reject_tests)
     passed_tests = 0
     for test in accept_tests:
-        result = subprocess.run(["java","Compiler", test_path + "accept/" + test],capture_output=True,check=True)
+        result = subprocess.run(["java","Compiler", test_path + "accept/" + test,"-t"],capture_output=True,check=True)
         if(result.stderr == b"" and result.stdout == b""):
             print("Passed accept test " + test)
             passed_tests += 1
@@ -90,7 +90,7 @@ def typecheck_array_tests():
             print(result)
     
     for test in reject_tests:
-        result = subprocess.run(["java","Compiler", test_path + "reject/" + test],capture_output=True,check=True)
+        result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=True)
         if(result.stderr == b"" and result.stdout == b""):
             print("Failed test " + test +  ", expected reject. Dumping process object:")
             print(result)
