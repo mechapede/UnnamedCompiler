@@ -1,12 +1,21 @@
 package inter;
 
 public class IRConstantFloat extends IRConstant {
-    public float value;
-    public IRConstantFloat(float f) {
-        value = f;
-    }
+        public float value;
+        public IRConstantFloat(float f) {
+            value = f;
+        }
 
-    public String toString() {
-        return "" + value;
-    }
+        public String toString() {
+            return "" + value;
+        }
+
+        public String jsmVal() {
+            return "" + value;
+        }
+
+        public Object accept(IRVisitor v) {
+            return v.visit(this);
+        }
+
 }

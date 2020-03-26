@@ -28,10 +28,13 @@ public class Compiler {
         
         boolean prettyprint = false;
         boolean typeonly = false;
+        boolean ironly = false;
         if(args.length > 1 && args[1].equals("-p")) {
             prettyprint = true;
         }else if(args.length > 1 && args[1].equals("-t")) {
             typeonly = true;
+        }else if(args.length > 1 && args[1].equals("-i")) {
+            ironly = true;
         }
 
         ulNoActionsLexer lexer = new ulNoActionsLexer(input);
@@ -57,11 +60,18 @@ public class Compiler {
                 return;
             }
             
-            IRVisitor ir = new IRVisitor();
+            IntermediateVisitor ir = new IntermediateVisitor();
             p.accept(ir);
             IRProgram irp = ir.getIRProgram();
             irp.setName(match.group(1));
-            System.out.print(irp); 
+            if(ironly){
+                System.out.print(irp); 
+                return;
+            }
+            
+            JasminIRVisitor irv = new JasminIRVisitor();
+            irp.accept(irv);
+            System.out.print(irv.getOut()); 
 
         } catch(RecognitionException e)	{
             System.err.println("Compiler failed. See errors below:");

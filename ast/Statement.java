@@ -1,6 +1,6 @@
 package ast;
 
-public class Statement extends TreeNode {
+public abstract class Statement extends TreeNode {
 
     public Statement() {
         super();
@@ -8,9 +8,5 @@ public class Statement extends TreeNode {
 
     public Statement(int tokenline, int tokenchar) {
         super(tokenline,tokenchar);
-    }
-
-    public Object accept(Visitor v) {
-        return null;
     }
 }

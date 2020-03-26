@@ -30,7 +30,5 @@ public abstract class TreeNode {
         return this.tokenchar;
     }
 
-    public Object accept(Visitor v) {
-        return null;
-    }
+    public abstract Object accept(Visitor v);
 }
