@@ -1,16 +1,16 @@
 package ast;
 
 public class AssignmentStatement extends Statement {
-    public Identifier id;
-    public Expression value;
+  public Identifier id;
+  public Expression value;
 
-    public AssignmentStatement() {
-        id = null;
-        value = null;
-    }
+  public AssignmentStatement() {
+    id = null;
+    value = null;
+  }
 
-    public Object accept(Visitor v) {
-        return v.visit(this);
-    }
+  public Object accept(Visitor v) {
+    return v.visit(this);
+  }
 
 }

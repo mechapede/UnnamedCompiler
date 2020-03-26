@@ -1,5 +1,5 @@
 package inter;
 
-public abstract class IRNode{
-    public abstract Object accept(IRVisitor v);
+public abstract class IRNode {
+  public abstract Object accept(IRVisitor v);
 }
