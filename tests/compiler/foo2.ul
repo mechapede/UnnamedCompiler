@@ -1,0 +1,26 @@
+void foo (int x, int y)
+{
+	int z;
+
+	z = x + 7 * y + 2;
+	
+	z = x + y;
+
+	x == y;
+}
+
+void foo2 (float x, float y)
+{
+	float z;
+	z = x + 7.0 * y + 2.0;
+	
+	z = x + y;
+}
+
+
+void main()
+{
+	foo(2,4);
+	foo2(2.0,9.0);
+}
+

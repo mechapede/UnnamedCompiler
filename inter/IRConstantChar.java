@@ -10,10 +10,6 @@ public class IRConstantChar extends IRConstant {
     return "'" + value + "'";
   }
 
-  public String jsmVal() {
-    return "" + ((int) value);
-  }
-
   public Object accept(IRVisitor v) {
     return v.visit(this);
   }

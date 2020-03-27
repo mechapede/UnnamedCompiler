@@ -2,80 +2,68 @@ package inter;
 
 public class Temporary {
   public enum Type {
-    VOID(null,null,"V") {
+    VOID(null) {
       public String toString() {
         return "V";
       }
     },
-    INT(null,"i","I") {
+    INT(null) {
       public String toString() {
         return "I";
       }
     },
-    CHAR(null,"i","C") {
+    CHAR(null) {
       public String toString() {
         return "C";
       }
     },
-    FLOAT(null,"f","F") {
+    FLOAT(null) {
       public String toString() {
         return "F";
       }
     },
-    STRING(null,"a","Ljava/lang/String;") {
+    STRING(null) {
       public String toString() {
         return "U";
       }
     },
-    BOOL(null,"i","Z") {
+    BOOL(null) {
       public String toString() {
         return "Z";
       }
     },
-    ARRAY_INT(INT,"a","[I") {
+    ARRAY_INT(INT) {
       public String toString() {
         return "AI";
       }
     },
-    ARRAY_CHAR(CHAR,"a","[C") {
+    ARRAY_CHAR(CHAR) {
       public String toString() {
         return "AC";
       }
     },
-    ARRAY_FLOAT(FLOAT,"a","[F") {
+    ARRAY_FLOAT(FLOAT) {
       public String toString() {
         return "AF";
       }
     },
-    ARRAY_STRING(STRING,"a","[java/lang/String;") {
+    ARRAY_STRING(STRING) {
       public String toString() {
         return "AU";
       }
     },
-    ARRAY_BOOL(BOOL,"a","[Z") {
+    ARRAY_BOOL(BOOL) {
       public String toString() {
         return "AZ";
       }
     };
     private Type subtype;
-    private String jvmprefix;
-    private String jvmType;
-    private Type(Type subtype, String jvmprefix, String jvmType) {
+    private Type(Type subtype) {
       this.subtype = subtype;
-      this.jvmprefix = jvmprefix;
-      this.jvmType = jvmType;
     }
 
     public Type subType() {
       return subtype;
-    }
-
-    public String jvmType() {
-      return jvmType;
-    }
-
-    public String jvmPrefix() {
-      return jvmprefix;
     }
   };
 

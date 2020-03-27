@@ -10,10 +10,6 @@ public class IRConstantBool extends IRConstant {
     return  value? "TRUE":"FALSE";
   }
 
-  public String jsmVal() {
-    return value? "1":"0";
-  }
-
   public Object accept(IRVisitor v) {
     return v.visit(this);
   }

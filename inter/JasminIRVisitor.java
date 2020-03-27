@@ -1,3 +1,4 @@
+/* Generates the Jasmin String representation of JVM instructions */
 package inter;
 
 public class JasminIRVisitor implements IRVisitor {
@@ -11,6 +12,78 @@ public class JasminIRVisitor implements IRVisitor {
 
   public String getOut() {
     return out;
+  }
+
+  /* Returns the JVM type name */
+  private String jasminType(Temporary.Type t) {
+    switch(t) {
+    case VOID:
+      return "V";
+    case BOOL:
+      return "Z";
+    case CHAR:
+      return "C";
+    case FLOAT:
+      return "F";
+    case INT:
+      return "I";
+    case STRING:
+      return "Ljava/lang/String;";
+    case ARRAY_BOOL:
+      return "[Z";
+    case ARRAY_CHAR:
+      return "[C";
+    case ARRAY_FLOAT:
+      return "[F";
+    case ARRAY_INT:
+      return "[I";
+    case ARRAY_STRING:
+      return "[java/lang/String;";
+    default:
+      throw new IRInvalidException("jasminType unexpected type: " + t);
+    }
+  }
+  
+  /* Return the prefix type for operands */
+  private String jasminOpPrefix(Temporary.Type t) {
+    switch(t) {
+    case BOOL:
+      return "i";
+    case CHAR:
+      return "i";
+    case FLOAT:
+      return "f";
+    case INT:
+      return "i";
+    case STRING:
+      return "a";
+    case ARRAY_BOOL:
+    case ARRAY_CHAR:
+    case ARRAY_FLOAT:
+    case ARRAY_INT:
+    case ARRAY_STRING:
+      return "a";
+    default:
+      throw new IRInvalidException("OpPrefix unexpected type: " + t);
+    }
+  }
+  
+  /* Returns the prefix type for setting array store/load command */
+  private String jasminArrayPrefix(Temporary.Type t) {
+    switch(t) {
+    case BOOL:
+      return "b";
+    case CHAR:
+      return "c";
+    case FLOAT:
+      return "f";
+    case INT:
+      return "i";
+    case STRING:
+      return "a";
+    default:
+      throw new IRInvalidException("ArrayPrefix unexpected type: " + t);
+    }
   }
 
   public Object visit(IRProgram p) {
@@ -38,28 +111,28 @@ public class JasminIRVisitor implements IRVisitor {
   }
 
   public Object visit(IRFunction f) {
-    out += ".method public static __" + f.id;
+    out += ".method public static __" + f.id; //all user functions __*
     out += "(";
     int i = 0;
     while(i < f.vars.temps.size()) {
       Temporary t = f.vars.temps.get(i);
       if(t.use != Temporary.Use.PARAMETER) break;
-      out += t.type.jvmType();
+      out += jasminType(t.type);
       i++;
     }
-    out += ")" + f.ret.jvmType() +"\n";
+    out += ")" + jasminType(f.ret) +"\n";
     out += "   .limit locals " + f.vars.temps.size() + "\n";
     i = 0;
     while(i < f.vars.temps.size()) {
       Temporary t = f.vars.temps.get(i);
       if(t.name != null) {
-        out += "   " + ".var " + t.index + " is " + t.name + " " + t.type.jvmType() + " from L_0 to L_1\n";
+        out += "   " + ".var " + t.index + " is " + t.name + " " + jasminType(t.type) + " from L_0 to L_1\n";
       } else {
-        out += "   " + ".var " + t.index + " is T" +  t.index + " " + t.type.jvmType()  + " from L_0 to L_1\n";
+        out += "   " + ".var " + t.index + " is T" +  t.index + " " + jasminType(t.type)  + " from L_0 to L_1\n";
       }
       i++;
     }
-    out += "   .limit stack 16\n"; //plenty of stack room
+    out += "   .limit stack 16\n"; //plenty of stack space
     out += "L_0:\n";
     label_offset = 2;
     for(i =0; i < f.statements.size(); i++) {
@@ -74,11 +147,13 @@ public class JasminIRVisitor implements IRVisitor {
 
   public Object visit(IRCall ca) {
     for(int i=0; i < ca.args.size(); i++) {
-      out += "   " + ca.args.get(i).type.jvmPrefix() + "load " + ca.args.get(i).index + "\n";
+      Temporary param = ca.args.get(i);
+      out += "   " + jasminOpPrefix(param.type) + "load " + param.index + "\n";
     }
     out += "   invokestatic " + classname + "/__" + ca.function.id + "(";
     for(int i=0; i < ca.args.size(); i++) {
-      out += ca.args.get(i).type.jvmType();
+      Temporary param = ca.args.get(i);
+      out += jasminType(param.type);
     }
     out += ")";
     out += ca.function.ret;
@@ -86,12 +161,13 @@ public class JasminIRVisitor implements IRVisitor {
     return null;
   }
 
-  public Object visit(IRReturn r) {
-    if(r.value == null) {
+  public Object visit(IRReturn ret) {
+    if(ret.value == null) {
       out += "   return";
     } else {
-      out += "   " + r.value.type.jvmPrefix() + "load " + r.value.index + "\n" + //TODO: returning arrays
-             "   " + r.value.type.jvmPrefix()  + "return";
+
+      out += "   " + jasminOpPrefix(ret.value.type) + "load " + ret.value.index + "\n" + //TODO: returning arrays
+             "   " + jasminOpPrefix(ret.value.type)  + "return";
     }
     return null;
   }
@@ -100,13 +176,13 @@ public class JasminIRVisitor implements IRVisitor {
     out += "   ldc " + ac.size + "\n";
     switch(ac.dest.type) {
     case ARRAY_BOOL:
-      out += "   newarray boolean \n";
+      out += "   newarray boolean\n";
       break;
     case ARRAY_CHAR:
-      out += "   newarray char \n";
+      out += "   newarray char\n";
       break;
     case ARRAY_FLOAT:
-      out += "   newarray float \n";
+      out += "   newarray float\n";
       break;
     case ARRAY_INT:
       out += "   newarray int\n";
@@ -115,7 +191,7 @@ public class JasminIRVisitor implements IRVisitor {
       out+= "   newarray java/lang/String\n";
       break;
     default:
-      return null;
+      throw new IRInvalidException("ArrayCreate type is not an array!");
     }
     out += "   astore " + ac.dest.index;
     return null;
@@ -123,87 +199,56 @@ public class JasminIRVisitor implements IRVisitor {
 
   public Object visit(IRArrayValue av) {
     out += "   " + "aload " + av.array.index + "\n" +
-           "   iload " + av.index.index + "\n";
-    switch(av.array.type) {
-    case ARRAY_BOOL:
-      out += "   baload\n";
-      break;
-    case ARRAY_CHAR:
-      out += "   caload\n";
-      break;
-    case ARRAY_FLOAT:
-      out += "   faload\n";
-      break;
-    case ARRAY_INT:
-      out += "   iaload\n";
-      break;
-    case ARRAY_STRING:
-      out += "   aaload\n";
-      break;
-    default:
-      return null;
-    }
-
-    out += "   " + av.dest.type.jvmPrefix() + "store " + av.dest.index;
+           "   iload " + av.index.index + "\n" + 
+           "   " + jasminArrayPrefix(av.dest.type) +  "aload\n" +
+           "   " + jasminOpPrefix(av.dest.type) + "store " + av.dest.index;
     return null;
   }
 
-  public Object visit(IRArrayAssignment aa) {
-    out += "   aload " + aa.dest.index + "\n" +
-           "   " + aa.index.type.jvmPrefix() + "load " + aa.index.index + "\n" +
-           "   " + aa.input.type.jvmPrefix() + "load " + aa.input.index + "\n";
-    switch(aa.dest.type) {
-    case ARRAY_BOOL:
-      out += "   bastore";
-      break;
-    case ARRAY_CHAR:
-      out += "   castore";
-      break;
-    case ARRAY_FLOAT:
-      out += "   fastore";
-      break;
-    case ARRAY_INT:
-      out += "   iastore";
-      break;
-    case ARRAY_STRING:
-      out += "   aastore";
-      break;
-    default:
-      return null;
-    }
+  public Object visit(IRArrayAssignment as) {
+    out += "   aload " + as.dest.index + "\n" +
+           "   " + jasminOpPrefix(as.index.type) + "load " + as.index.index + "\n" +
+           "   " + jasminOpPrefix(as.input.type) + "load " + as.input.index + "\n" +
+           "   " + jasminArrayPrefix(as.input.type) + "astore";
     return null;
   }
 
   public Object visit(IRAssignment as) {
-    out += "   " + as.input.type.jvmPrefix() + "load " + as.input.index + "\n" +
-           "   " + as.dest.type.jvmPrefix() + "store " + as.dest.index;
+    out += "   " + jasminOpPrefix(as.input.type) + "load " + as.input.index + "\n" +
+           "   " + jasminOpPrefix(as.dest.type) + "store " + as.dest.index;
     return null;
   }
 
   public Object visit(IRConstantAssignment ca) {
-    out += "   ldc " + ca.val.jsmVal() + "\n" +
-           "   " + ca.dest.type.jvmPrefix() + "store " + ca.dest.index;
+    out += "   ldc ";
+    ca.val.accept(this);
+    out += "\n   " + jasminOpPrefix(ca.dest.type) + "store " + ca.dest.index;
     return null;
   }
 
   public Object visit(IRConstantBool b) {
-    return null; //not used
+    out += b.value? "1":"0";
+    return null;
   }
 
   public Object visit(IRConstantChar c) {
-    return null; //not used
+    out += "" + ((int) c.value);
+    return null;
   }
 
   public Object visit(IRConstantFloat f) {
-    return null; //not used
+    out += "" + f.value;
+    return null;
   }
 
   public Object visit(IRConstantInt i) {
-    return null; //not used
+    out += "" + i.value;
+    return null;
   }
 
   public Object visit(IRConstantString s) {
-    return null; //not used
+    out += "\"" + s.value + "\"";
+    return null;
   }
 
   public Object visit(IRIfGoto ifg) {
@@ -224,14 +269,20 @@ public class JasminIRVisitor implements IRVisitor {
 
   public Object visit(IRUnaryOp u) {
     switch(u.operation) {
-    case NEGATE: //only boolean used
-      out += "   iload " + u.input.index + "\n";
-      out += "   ldc 1\n";
-      out += "   ixor \n";
-      out += "   istore " + u.result.index;
+    case NEGATE: //only negate with bool used in language
+      switch(u.input.type) {
+      case BOOL:
+        out += "   iload " + u.input.index + "\n";
+        out += "   ldc 1\n";
+        out += "   ixor \n";
+        out += "   istore " + u.result.index;
+        break;
+      default:
+        throw new IRInvalidException("Unsupported unary negate type: " + u.input.type);
+      }
       break;
     default:
-      return null;
+      throw new IRInvalidException("Unsupported unary op: " + u.operation);
     }
     return null;
   }
@@ -240,7 +291,7 @@ public class JasminIRVisitor implements IRVisitor {
     switch(b.operation) {
     case ADD:
       switch(b.input1.type) {
-      case INT:
+      case INT: //TODO: some of these cases can be collapsed with added prefix Jasmin Functions
       case CHAR:
         out += "   iload " + b.input1.index + "\n";
         out += "   iload " + b.input2.index + "\n";
@@ -265,7 +316,7 @@ public class JasminIRVisitor implements IRVisitor {
         out += "   astore " + b.result.index;
         break;
       default:
-        break; //TODO: error handling
+        throw new IRInvalidException("Unsupported type with " + b.operation + ": " + b.input1.type);
       }
       break;
     case SUB:
@@ -284,7 +335,7 @@ public class JasminIRVisitor implements IRVisitor {
         out += "   fstore " + b.result.index;
         break;
       default:
-        break; //TODO error handling
+        throw new IRInvalidException("Unsupported type with " + b.operation + ": " + b.input1.type);
       }
       break;
     case MUL:
@@ -302,7 +353,7 @@ public class JasminIRVisitor implements IRVisitor {
         out += "   fstore " + b.result.index;
         break;
       default:
-        break;
+        throw new IRInvalidException("Unsupported type with " + b.operation + ": " + b.input1.type);
       }
       break;
     case EQUAL:
@@ -349,7 +400,7 @@ public class JasminIRVisitor implements IRVisitor {
         label_offset += 2;
         break;
       default:
-        break; //TODO: error check
+        throw new IRInvalidException("Unsupported type with " + b.operation + ": " + b.input1.type);
       }
       break;
     case LT:
@@ -396,26 +447,26 @@ public class JasminIRVisitor implements IRVisitor {
         label_offset += 2;
         break;
       default:
-        break;
+        throw new IRInvalidException("Unsupported type with " + b.operation + ": " + b.input1.type);
       }
       break;
     default:
-      return null;
+      throw new IRInvalidException("Unsupported operand " + b.operation);
     }
     return null;
   }
 
   public Object visit(IRPrint p) {
     out += "   getstatic java/lang/System/out Ljava/io/PrintStream;\n";
-    out += "   " + p.contents.type.jvmPrefix() + "load " + p.contents.index + "\n";
-    out += "   invokevirtual java/io/PrintStream/print(" + p.contents.type.jvmType() + ")V";
+    out += "   " + jasminOpPrefix(p.contents.type) + "load " + p.contents.index + "\n";
+    out += "   invokevirtual java/io/PrintStream/print(" + jasminType(p.contents.type) + ")V";
     return null;
   }
 
   public Object visit(IRPrintln pl) {
     out += "   getstatic java/lang/System/out Ljava/io/PrintStream;\n";
-    out += "   " + pl.contents.type.jvmPrefix() + "load " + pl.contents.index + "\n";
-    out += "   invokevirtual java/io/PrintStream/println(" + pl.contents.type.jvmType() + ")V";
+    out += "   " + jasminOpPrefix(pl.contents.type) + "load " + pl.contents.index + "\n";
+    out += "   invokevirtual java/io/PrintStream/println(" + jasminType(pl.contents.type) + ")V";
     return null;
   }
 }

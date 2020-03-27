@@ -1,0 +1,15 @@
+void main ()
+{
+	int x;
+	int y;
+	int z;
+
+	x = 1;
+	y = 2;
+	z = 3;
+
+	z = x*(y+1)+7;
+	
+	println z;
+}
+

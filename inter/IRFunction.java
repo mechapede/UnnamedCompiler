@@ -8,8 +8,9 @@ public class IRFunction extends IRNode {
   public ArrayList<IRStatement> statements;
   public TempFactory vars;
 
-  public IRFunction(String id) {
+  public IRFunction(String id, Temporary.Type ret) {
     this.id = id;
+    this.ret = ret;
     statements = new ArrayList<IRStatement>();
     vars = new TempFactory();
   }

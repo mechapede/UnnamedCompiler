@@ -1,0 +1,14 @@
+void less (int x, int y)
+{
+	if (x < y)
+	{
+		print x;
+		print " is less than ";
+	}
+	println y;
+}
+
+void main()
+{
+	less(2,3);
+}

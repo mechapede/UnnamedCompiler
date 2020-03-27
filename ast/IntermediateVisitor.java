@@ -59,8 +59,10 @@ public class IntermediateVisitor extends Visitor {
   public Temporary visit(Program p) {
     program = new IRProgram();
     for(int i = 0; i < p.getFunctionCount(); i++) { //func ref first
-      Identifier id = p.getFunction(i).decl.id;
-      IRFunction f = new IRFunction(id.id);
+      Function forig = p.getFunction(i);
+      Identifier id = forig.decl.id;
+      Temporary.Type type = convert(forig.decl.type);
+      IRFunction f = new IRFunction(id.id,type);
       functions.put(id,f);
       program.addFunction(f);
     }
@@ -267,17 +269,16 @@ public class IntermediateVisitor extends Visitor {
 
   public Temporary visit(FunctionCall fc) {
     IRFunction f = functions.get(fc.name);
-    Temporary dest = null;
-    if(f.ret != Temporary.Type.VOID) dest = current.vars.getTemp(f.ret);
-    IRCall call = new IRCall(dest,f);
+    IRCall call = new IRCall(f);
     if(fc.args != null) {
       for(int i = 0; i < fc.args.getExpressionCount(); i++) {
         Temporary t = (Temporary) fc.args.getExpression(i).accept(this);
         call.args.add(t);
       }
     }
+    if(f.ret != Temporary.Type.VOID) call.dest = current.vars.getTemp(f.ret);
     current.addStatement(call);
-    return dest;
+    return call.dest;
   }
 
   public Temporary visit(ArrayValue av) {

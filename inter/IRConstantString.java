@@ -10,10 +10,6 @@ public class IRConstantString extends IRConstant {
     return "\"" + value + "\"";
   }
 
-  public String jsmVal() {
-    return "\"" + value + "\"";
-  }
-
   public Object accept(IRVisitor v) {
     return v.visit(this);
   }
