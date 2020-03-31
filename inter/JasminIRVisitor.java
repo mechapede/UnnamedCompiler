@@ -38,12 +38,12 @@ public class JasminIRVisitor implements IRVisitor {
     case ARRAY_INT:
       return "[I";
     case ARRAY_STRING:
-      return "[java/lang/String;";
+      return "[Ljava/lang/String;";
     default:
       throw new IRInvalidException("jasminType unexpected type: " + t);
     }
   }
-  
+
   /* Return the prefix type for operands */
   private String jasminOpPrefix(Temporary.Type t) {
     switch(t) {
@@ -67,7 +67,7 @@ public class JasminIRVisitor implements IRVisitor {
       throw new IRInvalidException("OpPrefix unexpected type: " + t);
     }
   }
-  
+
   /* Returns the prefix type for setting array store/load command */
   private String jasminArrayPrefix(Temporary.Type t) {
     switch(t) {
@@ -156,8 +156,8 @@ public class JasminIRVisitor implements IRVisitor {
       out += jasminType(param.type);
     }
     out += ")";
-    out += ca.function.ret;
-    if(ca.dest != null) out += "\n   istore " + ca.dest.index;
+    out += jasminType(ca.function.ret);
+    if(ca.dest != null) out += "\n   " + jasminOpPrefix(ca.dest.type) + "store " + ca.dest.index;
     return null;
   }
 
@@ -188,7 +188,7 @@ public class JasminIRVisitor implements IRVisitor {
       out += "   newarray int\n";
       break;
     case ARRAY_STRING:
-      out+= "   newarray java/lang/String\n";
+      out+= "   anewarray java/lang/String\n";
       break;
     default:
       throw new IRInvalidException("ArrayCreate type is not an array!");
@@ -199,7 +199,7 @@ public class JasminIRVisitor implements IRVisitor {
 
   public Object visit(IRArrayValue av) {
     out += "   " + "aload " + av.array.index + "\n" +
-           "   iload " + av.index.index + "\n" + 
+           "   iload " + av.index.index + "\n" +
            "   " + jasminArrayPrefix(av.dest.type) +  "aload\n" +
            "   " + jasminOpPrefix(av.dest.type) + "store " + av.dest.index;
     return null;
@@ -456,17 +456,30 @@ public class JasminIRVisitor implements IRVisitor {
     return null;
   }
 
+  private String printType(Temporary.Type t) {
+    switch(t) {
+    case ARRAY_BOOL:
+    case ARRAY_CHAR:
+    case ARRAY_FLOAT:
+    case ARRAY_INT:
+    case ARRAY_STRING:
+      return "Ljava/lang/Object;";
+    default:
+      return jasminType(t);
+    }
+  }
+
   public Object visit(IRPrint p) {
     out += "   getstatic java/lang/System/out Ljava/io/PrintStream;\n";
     out += "   " + jasminOpPrefix(p.contents.type) + "load " + p.contents.index + "\n";
-    out += "   invokevirtual java/io/PrintStream/print(" + jasminType(p.contents.type) + ")V";
+    out += "   invokevirtual java/io/PrintStream/print(" + printType(p.contents.type) + ")V";
     return null;
   }
 
   public Object visit(IRPrintln pl) {
     out += "   getstatic java/lang/System/out Ljava/io/PrintStream;\n";
     out += "   " + jasminOpPrefix(pl.contents.type) + "load " + pl.contents.index + "\n";
-    out += "   invokevirtual java/io/PrintStream/println(" + jasminType(pl.contents.type) + ")V";
+    out += "   invokevirtual java/io/PrintStream/println(" + printType(pl.contents.type) + ")V";
     return null;
   }
 }
