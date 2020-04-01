@@ -37,7 +37,7 @@ def parse_tests():
       passed_tests += 1
 
   for test in reject_tests:
-    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-p"],capture_output=True,check=True)
+    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-p"],capture_output=True,check=False)#TODO: add test code for checking for failed returns
     if( result.stderr != b""):
         print("Passed reject test " + test)
         passed_tests += 1
@@ -65,7 +65,7 @@ def typecheck_tests():
       print(result)
   
   for test in reject_tests:
-    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=True)
+    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=False)
     if(result.stderr == b"" and result.stdout == b""):
       print("Failed test " + test +  ", expected reject. Dumping process object:")
       print(result)
@@ -93,7 +93,7 @@ def typecheck_array_tests():
       print(result)
   
   for test in reject_tests:
-    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=True)
+    result = subprocess.run(["java","Compiler", test_path + "reject/" + test,"-t"],capture_output=True,check=False)
     if(result.stderr == b"" and result.stdout == b""):
       print("Failed test " + test +  ", expected reject. Dumping process object:")
       print(result)

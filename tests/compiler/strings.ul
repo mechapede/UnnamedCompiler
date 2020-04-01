@@ -1,0 +1,31 @@
+
+
+void main() {
+  string_tests();
+}
+
+
+boolean string_tests(){
+   string t1;
+   string t2;
+   string t3;
+   string t2t3;
+   t1 = "foo";
+   t2 = "bar";
+   t3 = "zzzz";
+   if( t1 < t3 ) {
+    println "string less than okay";
+   }
+   if( t3 < t1 ) {
+    println "string less than broken";
+   }
+   t2t3 = t2 + t3;
+   if( t2 == "bar") {
+    println "string compare works";
+   }
+   if( t2 == "o") {
+    println "string compare wack man!";
+   }
+   
+   return false;
+}

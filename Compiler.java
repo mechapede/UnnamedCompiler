@@ -13,7 +13,7 @@ public class Compiler {
   public static void main(String[] args) throws Exception {
     if(args.length == 0) {
       System.out.println("Usage: Compiler filename.ul");
-      return;
+      System.exit(1);
     }
 
     Pattern name_regex = Pattern.compile("^(?:[^/]*/+)*([^/]+?)\\.ul$");
@@ -21,6 +21,7 @@ public class Compiler {
     boolean found = match.find();
     if(!found) {
       System.out.println("filename must end with .ul");
+      System.exit(1);
     }
 
     ANTLRInputStream input;
@@ -54,7 +55,7 @@ public class Compiler {
       p.accept(checker);
       if(checker.errors()) {
         System.err.println(checker.dumpErrors());
-        return;
+        System.exit(2);
       }
       if(typeonly) {
         return;
@@ -75,6 +76,7 @@ public class Compiler {
 
     } catch(RecognitionException e)	{
       System.err.println("Compiler failed. See errors below:");
+      System.exit(2);
       // A lexical or parsing error occured.
       // ANTLR will have already printed information on the
       // console due to code added to the grammar.  So there is
@@ -83,6 +85,7 @@ public class Compiler {
       System.err.println("Compiler failed. See errors below:");
       System.err.println(e);
       e.printStackTrace();
+      System.exit(2);
     }
   }
 }

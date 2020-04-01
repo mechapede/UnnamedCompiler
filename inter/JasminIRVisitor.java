@@ -376,7 +376,7 @@ public class JasminIRVisitor implements IRVisitor {
       case FLOAT:
         out += "   fload " + b.input1.index + "\n";
         out += "   fload " + b.input2.index + "\n";
-        out += "   fsub\n";
+        out += "   fcmpg\n";
         out += "   ifeq L_" + label_offset + "\n";
         out += "   ldc 0\n";
         out += "   goto L_" + (label_offset+1) + "\n";
@@ -423,7 +423,7 @@ public class JasminIRVisitor implements IRVisitor {
       case FLOAT:
         out += "   fload " + b.input1.index + "\n";
         out += "   fload " + b.input2.index + "\n";
-        out += "   fsub\n";
+        out += "   fcmpg\n";
         out += "   iflt L_" + label_offset + "\n";
         out += "   ldc 0\n";
         out += "   goto L_" + (label_offset+1) + "\n";
