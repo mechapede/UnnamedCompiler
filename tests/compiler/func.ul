@@ -1,0 +1,114 @@
+int _foo(int k) {
+  return k;
+}
+
+void main() {
+  int[10] lots_array;
+  string[4] abc_str;
+  string[3] abc_ret;
+  float[1] stupid_float;
+  char[4] loopback_array;
+  int i;
+  int foo;
+
+  print "Adding 10 and 12: ";
+  println _foo(10) + _foo(12);
+
+  print "Calling lots ";
+  lots_array = foo(10);
+  println lots_array[9]; //should be 19
+
+  abc_str[0] = "cow";;
+  abc_str[1] = "moo";
+  abc_str[2] = "dung";
+  abc_str[3] = "loophool";
+  abc_ret = _strALL3(abc_str);
+  print "abc_ret ";
+  println abc_ret[2];
+  
+  print "Calling strabc ";
+  println strABC("ignoed",2);
+  
+  print "Calling _foo";
+  foo =  _foo(123);
+  println foo;
+  
+  print "Calling f9_7";
+  println f9_7(10.0);
+  
+  print "Calling floater ";
+  stupid_float = floater1_();
+  println stupid_float[0];
+  
+  print "Calling alphaMy ";
+  println alphaMy('!');
+  
+  println "Calling loopback ";
+  loopback_array = loopback();
+  i = 0;
+  while(i < 4){
+    println loopback_array[i];
+    i = i + 1;
+  }
+  
+  print "Calling isInt ";
+  println isInt(19);
+}
+
+int[10] foo(int k) {
+  int[10] lots;
+  int i;
+  i = 0;
+  while(i < 10) {
+    lots[i] = k+i;
+    i = i + 1;
+  }
+  return lots;
+}
+
+string[3] _strALL3(string[4] k) {
+  string[3] three;
+  int i;
+  i = 0;
+  while(i < 3) {
+    three[i] = k[i] + "modified";
+    i = i +1 ;
+  }
+  return three;
+}
+
+string strABC(string _yam, int fire) {
+  return "{abcdef99}";
+}
+
+float f9_7(float foo) {
+  return 1.0;
+}
+
+float[1] floater1_() {
+  float[1] foo;
+  foo[0] = 1001.2;
+  return foo;
+}
+
+char alphaMy(char let) {
+  return let + '!';
+}
+
+char[4] loopback() {
+  char[4] mmm;
+  mmm[0] = 'a';
+  mmm[1] = 'b';
+  mmm[2] = 'c';
+  mmm[3] = 'd';
+  return mmm;
+}
+
+boolean isInt(int f) {
+  if(10 < 0) {
+    print "foobar";
+  }
+  return true;
+}
+
+

@@ -2,4 +2,5 @@
 *.tokens
 ulNoActionsLexer.java
 ulNoActionsParser.java
+*.asm
 

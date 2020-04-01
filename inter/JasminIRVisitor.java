@@ -305,14 +305,14 @@ public class JasminIRVisitor implements IRVisitor {
         out += "   fstore " + b.result.index;
         break;
       case STRING:
-        out += "   new java/lang/Stringouter\n";
+        out += "   new java/lang/StringBuilder\n";
         out += "   dup\n";
-        out += "   invokenonvirtual java/lang/Stringouter/<init>()V\n";
+        out += "   invokenonvirtual java/lang/StringBuilder/<init>()V\n";
         out += "   aload " + b.input1.index + "\n";
-        out += "   invokevirtual java/lang/Stringouter/append(Ljava/lang/String;)Ljava/lang/Stringouter;\n";
+        out += "   invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;\n";
         out += "   aload " + b.input2.index + "\n";
-        out += "   invokevirtual java/lang/Stringouter/append(Ljava/lang/String;)Ljava/lang/Stringouter;\n";
-        out += "   invokevirtual java/lang/Stringouter/toString()Ljava/lang/String;\n";
+        out += "   invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;\n";
+        out += "   invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;\n";
         out += "   astore " + b.result.index;
         break;
       default:
