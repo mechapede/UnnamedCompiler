@@ -1,5 +1,4 @@
 # UnnamedCompiler by Matthew MacDonald
-Compiler for Csc435
 
 Instructions
 1) Add antlr to the CLASSPATH environment variable.
